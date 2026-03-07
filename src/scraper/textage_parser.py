@@ -337,7 +337,7 @@ def _parse_bpm_changes(html_text: str) -> list[dict]:
     Returns list of {measure, pos, bpm} sorted by (measure, pos).
     """
     changes = []
-    for m in re.finditer(r'tc\[(\d+)\]=\[([^\]]+)\];', html_text):
+    for m in re.finditer(r'tc\[(\d+)\]\s*=\s*\[([^\]]+)\];', html_text):
         measure = int(m.group(1))
         for entry in re.findall(r'"([^"]+)"', m.group(2)):
             bpm_str = entry[:3].strip()
@@ -506,6 +506,7 @@ def parse_html(html_text: str, side: int = 1, difficulty: str = 'A') -> dict:
         "total_notes": len(notes),
         "bpm_base": bpm_base,
         "bpm_changes": bpm_changes,
+        "lndef": lndef,
     }
 
 
@@ -531,23 +532,206 @@ def get_score_data(url: str) -> dict:
     return parse_html(res.text, difficulty=difficulty)
 
 
+
+
+# ---------------------------------------------------------------------------
+# Phase 2: Density Analysis
+# ---------------------------------------------------------------------------
+
+def build_time_map(
+    notes: list[dict],
+    measure_lens: dict,
+    bpm_changes: list[dict],
+    bpm_base: str,
+    lndef: int = LNDEF,
+) -> list[dict]:
+    """Assign a real timestamp (seconds) to every note.
+
+    Uses BPM change events (soflan) to convert score position → real time.
+    Returns notes with an added 'time' field (float, seconds from song start).
+
+    BPM change format: [{measure, pos, bpm}] sorted by (measure, pos).
+    bpm_base: raw string like "157" or "10～166" – used as the initial BPM.
+    """
+    # Parse initial BPM from bpm_base
+    bpm_str = re.sub(r'～.*', '', bpm_base).strip()  # take the first value
+    try:
+        initial_bpm = float(bpm_str)
+    except ValueError:
+        initial_bpm = 120.0
+
+    # If the first BPM change is at the very start (measure=1, pos=0),
+    # use it as the true initial BPM (bpm_base min value may be a slow soflan)
+    if bpm_changes and bpm_changes[0]['measure'] == 1 and bpm_changes[0]['pos'] == 0:
+        initial_bpm = float(bpm_changes[0]['bpm'])
+
+    # Build a flat list of (abs_pos, bpm) breakpoints
+    # abs_pos: cumulative position in score units (same scale as note pos)
+    def measure_to_abs(measure: int, pos: int) -> float:
+        """Convert (measure, intra-measure pos) to absolute score position."""
+        result = 0.0
+        for m in range(1, measure):
+            result += measure_lens.get(m, lndef)
+        result += pos
+        return result
+
+    def pos_to_beats(delta_pos: float, seg_lndef: float) -> float:
+        """Convert delta score-position to beats, accounting for time signature.
+        Each measure has `ln_n` pos units. The ratio ln_n/lndef gives the
+        time-signature multiplier (e.g. 0.75 for 3/4, 1.25 for 5/4).
+        1 measure = 4 beats in 4/4, so beats = delta_pos / lndef * 4.
+        For other time signatures: beats = delta_pos / seg_lndef * 4 * (seg_lndef/lndef)
+        which simplifies to delta_pos * 4 / lndef — always divide by global lndef.
+        """
+        return delta_pos * 4.0 / lndef
+
+    # Breakpoints: [(abs_pos, bpm), ...]
+    breakpoints = [(0.0, initial_bpm)]
+    for chg in bpm_changes:
+        abs_pos = measure_to_abs(chg['measure'], chg['pos'])
+        breakpoints.append((abs_pos, chg['bpm']))
+    breakpoints.sort(key=lambda x: x[0])
+
+    # Remove duplicate positions (last one wins)
+    deduped = {}
+    for abs_pos, bpm in breakpoints:
+        deduped[abs_pos] = bpm
+    breakpoints = sorted(deduped.items())
+
+    # Precompute cumulative real time at each breakpoint
+    # time[i] = real time (seconds) at breakpoints[i]
+    bp_times = [0.0]
+    for i in range(1, len(breakpoints)):
+        prev_pos, prev_bpm = breakpoints[i - 1]
+        curr_pos, _ = breakpoints[i]
+        delta_pos = curr_pos - prev_pos
+        # 1 measure = lndef pos units = 4 beats → each pos unit = 4/lndef beats
+        beats = delta_pos * 4.0 / lndef
+        seconds = beats * 60.0 / prev_bpm
+        bp_times.append(bp_times[-1] + seconds)
+
+    def abs_pos_to_time(abs_pos: float) -> float:
+        """Interpolate real time for a given absolute score position."""
+        # Find the breakpoint segment
+        idx = 0
+        for i in range(len(breakpoints) - 1):
+            if breakpoints[i + 1][0] <= abs_pos:
+                idx = i + 1
+            else:
+                break
+        seg_pos, seg_bpm = breakpoints[idx]
+        delta_pos = abs_pos - seg_pos
+        beats = delta_pos * 4.0 / lndef
+        seconds = beats * 60.0 / seg_bpm
+        return bp_times[idx] + seconds
+
+    # Assign timestamps to notes
+    timed_notes = []
+    for note in notes:
+        abs_pos = measure_to_abs(note['measure'], note['pos'])
+        t = abs_pos_to_time(abs_pos)
+        timed_notes.append({**note, 'time': t})
+
+    return timed_notes
+
+
+def analyze_density(
+    parse_result: dict,
+    window_sec: float = 5.0,
+    step_sec: float = 1.0,
+) -> dict:
+    """Compute note density metrics from a parse_html() result.
+
+    Parameters
+    ----------
+    parse_result : dict
+        Output of parse_html().
+    window_sec : float
+        Sliding window size in seconds for density calculation.
+    step_sec : float
+        Step size between windows in seconds.
+
+    Returns
+    -------
+    dict with:
+        'duration'        : total song duration in seconds
+        'timeline'        : list of {time, density, scratch_density}
+                            density = notes/sec (all keys) in window
+                            scratch_density = notes/sec (key==0) in window
+        'peak_density'    : float  (notes/sec, all keys)
+        'peak_time'       : float  (seconds, center of peak window)
+        'peak_scratch_density' : float
+        'peak_scratch_time'    : float
+        'mean_density'    : float  (average over all windows with notes)
+    """
+    lndef = parse_result.get('lndef', LNDEF)
+
+    timed_notes = build_time_map(
+        notes=parse_result['notes'],
+        measure_lens=parse_result['measure_lens'],
+        bpm_changes=parse_result['bpm_changes'],
+        bpm_base=parse_result['bpm_base'],
+        lndef=lndef,
+    )
+
+    if not timed_notes:
+        return {
+            'duration': 0.0, 'timeline': [],
+            'peak_density': 0.0, 'peak_time': 0.0,
+            'peak_scratch_density': 0.0, 'peak_scratch_time': 0.0,
+            'mean_density': 0.0,
+        }
+
+    all_times   = [n['time'] for n in timed_notes]
+    scratch_times = [n['time'] for n in timed_notes if n['key'] == 0]
+    duration = max(all_times)
+
+    timeline = []
+    t = 0.0
+    while t <= duration:
+        lo, hi = t - window_sec / 2, t + window_sec / 2
+        count   = sum(1 for x in all_times   if lo <= x < hi)
+        scratch = sum(1 for x in scratch_times if lo <= x < hi)
+        timeline.append({
+            'time': round(t, 3),
+            'density': round(count / window_sec, 4),
+            'scratch_density': round(scratch / window_sec, 4),
+        })
+        t += step_sec
+
+    peak = max(timeline, key=lambda x: x['density'])
+    peak_sc = max(timeline, key=lambda x: x['scratch_density'])
+    non_zero = [x['density'] for x in timeline if x['density'] > 0]
+
+    return {
+        'duration': round(duration, 2),
+        'timeline': timeline,
+        'peak_density': peak['density'],
+        'peak_time': peak['time'],
+        'peak_scratch_density': peak_sc['scratch_density'],
+        'peak_scratch_time': peak_sc['time'],
+        'mean_density': round(sum(non_zero) / len(non_zero), 4) if non_zero else 0.0,
+    }
+
+
 if __name__ == "__main__":
-    url = "https://textage.cc/score/31/level5.html?2AC00"
+    url = "https://textage.cc/score/21/verflcht.html?1XC00"
     data = get_score_data(url)
     print(f"Title: {data['title']}")
     print(f"Total notes: {data['total_notes']}")
 
-    # Per-measure count
-    from collections import defaultdict
-    per_measure = defaultdict(int)
-    for n in data["notes"]:
-        per_measure[n["measure"]] += 1
-    print("\nMeasure | Notes")
-    print("--------|------")
-    total = 0
-    for m in sorted(per_measure.keys()):
-        count = per_measure[m]
-        total += count
-        print(f"{m:7d} | {count:5d}")
-    print("--------|------")
-    print(f"Total   | {total:5d}")
+    # # Per-measure count
+    # from collections import defaultdict
+    # per_measure = defaultdict(int)
+    # for n in data["notes"]:
+    #     per_measure[n["measure"]] += 1
+    # print("\nMeasure | Notes")
+    # print("--------|------")
+    # total = 0
+    # for m in sorted(per_measure.keys()):
+    #     count = per_measure[m]
+    #     total += count
+    #     print(f"{m:7d} | {count:5d}")
+    # print("--------|------")
+    # print(f"Total   | {total:5d}")
+    print(analyze_density(data))

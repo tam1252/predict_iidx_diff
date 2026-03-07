@@ -1,3 +1,0 @@
-[{"title":"#CMFLG","easy":"1345.36","clear":"1447.22","hard":"1499.95","exhard":"1767.28","fc":"2222.12"},
-...
-(This text will be created by python processing the raw json if needed, actually let me use a python script to hit and dump it properly and consistently)
