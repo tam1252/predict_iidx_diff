@@ -236,13 +236,13 @@ def _expand_cn_lanes(lane_raw: int) -> list[int]:
     return sorted(set(lanes))
 
 
-def _build_measure_abs_starts(measure_lens: dict, max_measure: int) -> dict:
+def _build_measure_abs_starts(measure_lens: dict, max_measure: int, lndef: int = LNDEF) -> dict:
     """Compute cumulative absolute start position (in pos units) for each measure."""
     abs_starts = {}
     current = 0
     for m in range(1, max_measure + 2):
         abs_starts[m] = current
-        ln_n = measure_lens.get(m, LNDEF)
+        ln_n = measure_lens.get(m, lndef)
         # pos units = 1 per unit, max pos = ln_n - 1
         current += ln_n
     return abs_starts
@@ -253,6 +253,7 @@ def decode_textage_sp(
     measure_lens: dict,         # {measure_num: ln_n}
     cn_arrays: dict,            # result of _parse_cn_arrays
     side: int = 1,              # 1 = P1
+    lndef: int = LNDEF,         # default measure length (overridden per-song)
 ) -> list[dict]:
     """
     Decode all notes (normal + CN start/end) for SP side.
@@ -267,7 +268,7 @@ def decode_textage_sp(
     for measure_num, sdd in sorted(sp_raw_by_measure.items()):
         if not sdd or sdd in ("00", ""):
             continue
-        ln_n = measure_lens.get(measure_num, LNDEF)
+        ln_n = measure_lens.get(measure_num, lndef)
 
         if sdd.startswith("#"):
             raw_notes = _decode_hash(sdd, ln_n)
@@ -284,7 +285,7 @@ def decode_textage_sp(
 
     # 2. Decode CN notes with cross-measure endpoint support
     max_measure = max(sp_raw_by_measure.keys()) if sp_raw_by_measure else 100
-    abs_starts = _build_measure_abs_starts(measure_lens, max_measure + 10)
+    abs_starts = _build_measure_abs_starts(measure_lens, max_measure + 10, lndef)
     # Reverse lookup: given absolute position, which measure?
     measure_boundaries = sorted(abs_starts.items())  # [(m, abs_start), ...]
 
@@ -326,6 +327,67 @@ def decode_textage_sp(
                     notes.append({"measure": em, "pos": ep, "key": lane, "type": "cn_end"})
 
     return notes
+
+
+
+def _parse_bpm_changes(html_text: str) -> list[dict]:
+    """Parse BPM change events from tc[] arrays (outside difficulty blocks).
+    tc[measure] = ["BBBPP", ...] where BBB = BPM (3-char decimal, space-padded),
+    PP = intra-measure position in nbar units (0-based).
+    Returns list of {measure, pos, bpm} sorted by (measure, pos).
+    """
+    changes = []
+    for m in re.finditer(r'tc\[(\d+)\]=\[([^\]]+)\];', html_text):
+        measure = int(m.group(1))
+        for entry in re.findall(r'"([^"]+)"', m.group(2)):
+            bpm_str = entry[:3].strip()
+            pos_str = entry[3:].strip() if len(entry) > 3 else "0"
+            try:
+                bpm = int(bpm_str)
+                pos = int(pos_str) if pos_str else 0
+                changes.append({"measure": measure, "pos": pos, "bpm": bpm})
+            except ValueError:
+                pass
+    return sorted(changes, key=lambda x: (x["measure"], x["pos"]))
+
+
+
+def _parse_sp_block(block: str, parent_sp: dict | None = None) -> dict:
+    """Extract sp[] entries from a JS block, resolving sp[n] references via parent_sp.
+
+    Handles two formats:
+      Format A (array literal):         sp=[,,"entry2","entry3",...];
+      Format B (individual assignment):  sp[2]="entry2"; sp[3]="entry3"; ...
+    sp[n] references inside the array are resolved first from already-seen entries
+    in the current array, then from parent_sp (the outer difficulty block's sp).
+    """
+    parent = parent_sp or {}
+    sp = {}
+
+    array_match = re.search(r'sp\s*=\s*\[(.*?)\];', block, re.DOTALL)
+    if array_match:
+        content = array_match.group(1)
+        raw_parts = re.split(r',(?=(?:[^"]*"[^"]*")*[^"]*$)', content)
+        for i, p in enumerate(raw_parts):
+            p = p.strip()
+            if p.startswith('"'):
+                sp[i] = p.strip('"')
+            elif p.startswith("sp["):
+                ref_m = re.search(r'\d+', p)
+                if ref_m:
+                    ref = int(ref_m.group())
+                    # resolve: current array first, then parent
+                    sp[i] = sp.get(ref, parent.get(ref, ""))
+            # else: empty/undefined → leave absent (treated as "")
+    else:
+        # Format B
+        for m in re.finditer(r'sp\[(\d+)\]\s*=\s*"([^"]*)";', block):
+            sp[int(m.group(1))] = m.group(2)
+        for m in re.finditer(r'sp\[(\d+)\]\s*=\s*sp\[(\d+)\];', block):
+            dst, src = int(m.group(1)), int(m.group(2))
+            sp[dst] = sp.get(src, parent.get(src, ""))
+
+    return sp
 
 
 def _extract_difficulty_block(html_text: str, difficulty: str) -> str:
@@ -381,6 +443,8 @@ def parse_html(html_text: str, side: int = 1, difficulty: str = 'A') -> dict:
         'notes': list[{measure, pos, key, type}],
         'measure_lens': dict,
         'total_notes': int,
+        'bpm_base': str,                        # base BPM string e.g. "157" or "10~166"
+        'bpm_changes': list[{measure, pos, bpm}],  # soflan events sorted by position
     }
     difficulty: 'P'=beginner, 'N'=normal, 'H'=hyper, 'A'=another, 'X'=leggendaria
     """
@@ -389,58 +453,59 @@ def parse_html(html_text: str, side: int = 1, difficulty: str = 'A') -> dict:
     for m in re.finditer(r'ln\[(\d+)\]=(\d+);', html_text):
         measure_lens[int(m.group(1))] = int(m.group(2))
 
+    # Read LNDEF override if present (e.g. "LNDEF = 288;")
+    lndef_m = re.search(r'\bLNDEF\s*=\s*(\d+)\s*;', html_text)
+    lndef = int(lndef_m.group(1)) if lndef_m else LNDEF
+
     title_m = re.search(r'title\s*=\s*"([^"]+)"', html_text)
     title = title_m.group(1) if title_m else ""
 
-    # Extract only the block for the requested difficulty
+    bpm_m = re.search(r'\bbpm\s*=\s*"([^"]+)"', html_text)
+    bpm_base = bpm_m.group(1) if bpm_m else ""
+
+    bpm_changes = _parse_bpm_changes(html_text)
+
+    # Extract the difficulty block.
+    # Some difficulties (e.g. ANOTHER) are nested inside a parent block (e.g. else/if(k))
+    # and reference parent's sp[] entries as sp[n].
+    # Strategy: find the sp= definition that immediately precedes the target difficulty block,
+    # parse it as parent_sp, then parse the target block with parent_sp for reference resolution.
     block = _extract_difficulty_block(html_text, difficulty)
 
-    # Extract sp[] entries - two formats exist:
-    # Format A (array literal): sp=[,,"entry2","entry3",...];
-    # Format B (individual assignment): sp[2]="entry2"; sp[3]="entry3"; ...
-    sp_raw_by_measure = {}
+    # Find parent sp: the last sp=[ definition before the target block starts
+    block_start = html_text.find(block[:80])  # find approximate start of block in full html
+    parent_sp = {}
+    if block_start > 0:
+        preceding = html_text[:block_start]
+        sp_matches = list(re.finditer(r'sp\s*=\s*\[', preceding))
+        if sp_matches:
+            # Take the last sp=[ before the block - this is the direct parent
+            last_sp_pos = sp_matches[-1].start()
+            # Extract just that sp=[...]; literal
+            sp_end = html_text.find('];', last_sp_pos)
+            if sp_end > 0:
+                parent_block = html_text[last_sp_pos:sp_end+2]
+                parent_sp = _parse_sp_block(parent_block)
 
-    array_match = re.search(r'sp=\[(.*?)\];', block, re.DOTALL)
-    if array_match:
-        # Format A: split on commas outside quotes, raw index = measure number
-        content = array_match.group(1)
-        raw_parts = re.split(r',(?=(?:[^"]*"[^"]*")*[^"]*$)', content)
-        results_raw = {}
-        for i, p in enumerate(raw_parts):
-            measure_num = i
-            p = p.strip()
-            if p.startswith('"'):
-                sdd = p.strip('"')
-            elif p.startswith("sp["):
-                ref_m = re.search(r'\d+', p)
-                sdd = results_raw.get(int(ref_m.group()), "") if ref_m else ""
-            else:
-                sdd = ""
-            results_raw[measure_num] = sdd
-            sp_raw_by_measure[measure_num] = sdd
-    else:
-        # Format B: individual sp[n]="..." assignments
-        for m in re.finditer(r'sp\[(\d+)\]\s*=\s*"([^"]*)";', block):
-            sp_raw_by_measure[int(m.group(1))] = m.group(2)
-        # Also handle sp[n]=sp[m] (reference to another measure)
-        for m in re.finditer(r'sp\[(\d+)\]\s*=\s*sp\[(\d+)\];', block):
-            ref = int(m.group(2))
-            sp_raw_by_measure[int(m.group(1))] = sp_raw_by_measure.get(ref, "")
+    sp_raw_by_measure = _parse_sp_block(block, parent_sp)
 
     if not sp_raw_by_measure:
-        return {"title": title, "notes": [], "measure_lens": measure_lens, "total_notes": 0}
+        return {"title": title, "notes": [], "measure_lens": measure_lens,
+                "total_notes": 0, "bpm_base": bpm_base, "bpm_changes": bpm_changes}
 
     # Extract CN arrays from the difficulty block
     cn_arrays = _parse_cn_arrays(block)
 
     # Decode all notes
-    notes = decode_textage_sp(sp_raw_by_measure, measure_lens, cn_arrays, side=side)
+    notes = decode_textage_sp(sp_raw_by_measure, measure_lens, cn_arrays, side=side, lndef=lndef)
 
     return {
         "title": title,
         "notes": notes,
         "measure_lens": measure_lens,
         "total_notes": len(notes),
+        "bpm_base": bpm_base,
+        "bpm_changes": bpm_changes,
     }
 
 
@@ -467,7 +532,7 @@ def get_score_data(url: str) -> dict:
 
 
 if __name__ == "__main__":
-    url = "https://textage.cc/score/33/amorfati.html?1AC00"
+    url = "https://textage.cc/score/31/level5.html?2AC00"
     data = get_score_data(url)
     print(f"Title: {data['title']}")
     print(f"Total notes: {data['total_notes']}")
