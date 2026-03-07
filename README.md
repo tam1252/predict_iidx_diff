@@ -1,0 +1,2 @@
+# predict_iidx_diff
+CPIを用いてbeatmania IIDXの譜面難易度を推定するPJ
