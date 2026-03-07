@@ -1,0 +1,400 @@
+function bars_(n,mn){
+	if(off&&!stat_on)return;
+	o="";
+	if(s.charAt(5)!="0" && n==-1)n=999;
+	else if(n<0 || n>measure)return;
+	if(!ln[n])ln[n]=LNDEF;
+	nbar=Math.ceil(ln[n]/3);
+	if(nbar<4)nbar=4;
+	if(hs>1)mn=void(0);
+	else if(sc32[n]>=0)mn=sc32[n];
+	mnbase=sc32base[n];
+	if(sc32base[n]==undefined)mnbase=8;
+	mnloop=sc32loop[n];
+	if(sc32loop[n]==undefined)mnloop=mnbase;
+	ttlstart=ttl;
+	ttlcn=0;
+
+	if(db){sd[2]=sp;cn[2]=c1;}
+	if(os==2||flp){sd[0][n]=sd[1][n];
+			sd[1][n]=sd[2][n];
+			sd[2][n]=sd[0][n];
+			cn[0][n]=cn[1][n];
+			cn[1][n]=cn[2][n];
+			cn[2][n]=cn[0][n];}
+	o+="<table cellpadding=0 cellspacing=0 width="+(ty*dw[d]+dr[d]-4)+
+		" style='border:1px "+(prt? "black":"white")+" solid' height="+(nbar*hs)+"><tr>";
+	for(h=1;h<=2;h++){
+		set_co(h);
+		objtab=[];
+		if (objres[h][0]==n) {
+			if (objres[h][1]){
+				for(ori=0;ori<=9;ori++)	objtab[ln[n]-ori]=objres[h][1];
+			}
+		}
+		objres[h]=[n-1,0];
+		if(h==2){
+			if(d==0)o+="<\/div><\/td><th width=32 bgcolor="+
+				(prt ? "white style='border-left:1px black solid;"+
+				(ty==2 ? "border-right:1px black solid;padding:0px'" : "'")
+				:"gray")+"><a id='mes"+n+"'>"+((nbar*hs>=32) ? (n==999 ? 1:n+gap)+"<\/a><\/th>":
+				"<img width=1 height=1><\/th>");
+			if(ty==1)break;
+			if(d==1)o+="<\/div><\/td><td width=2 bgcolor="+(prt ? "black":"white")+"><\/td>";
+		}
+		o+="<td width="+df[d]+" valign=top style='background-image:url(\""+
+			imgdir+(hsa==DEFHSA ? (hs==5/8 ? 5 : back-4+4*hs) : 1)+d+".gif\");"+
+			"background-position:"+((2-sides[h])*(23-7*d))+"px "+
+			(nbar*hs-1)+"px'><div style='width:"+df[d]+"px;height:"+(nbar*hs)+"px'>";
+		if(hsa!=DEFHSA){
+			for(nbari=1; ;nbari++){
+				nbarh=Math.ceil(nbari*hsa*(back==6 ? 2/3:1));
+				if(nbarh >= nbar*hs) break;
+				o+="<img src="+imgdir+(nbarh%(hsa*4)==0 ? "x1":"x2")+
+					".gif height=1 width="+df[d]+" style='top:"+(nbarh-2)+"px;'>";
+			}
+		}
+		if(d && ty-h<1 && nbar*hs>=32){
+			o+="<span id='mes"+n+"' style='bottom:0px;"+(barnotes ? "z-index:5;":"")+
+			csd[sides[h]]+":0px;color:gray;font:16px impact'>"+(n==999 ? 1:n+gap)+"<\/span>";
+		}
+		if(tc[n]&&h==1){
+			for (tci=tc[n].length-1; tci>=0; tci--){
+				cb=tc[n][tci];
+				tp=nbar-cb.substring(3)-2;
+				stat_insert(2, 0, stat_pos + eval(cb.substring(3))*3, cb.substring(0,3));
+				o+="<img src="+imgdir+"t.gif height=2 width="+((d)?dw[d]*ty-2:dw[d])+
+					" style='top:"+((tp+2)*hs-2)+"px'>";
+				if(!barnotes){
+					o+="<span style='z-index:5;font-size:10px;top:"+((tp+2)*hs-7-d*4)+
+						"px;font-weight:bold;width:20px;text-align:center;"+
+						((!d) ? "background:"+(prt?"white":"gray")+";left:14":csd[sides[1]]+":")+
+						"0px;color:"+(prt ? "black":"palegreen")+";'>"+cb.substring(0,3)+"<\/span>";
+				}
+				if(!d && ty==2){
+					o+="<img src="+imgdir+"t.gif height=2 width=134 style='top:"+((tp+2)*hs-2)+"px;left:166px'>";
+				}
+			}
+		}
+
+		for(mm=0; mm<=m; mm++){
+			sdd=sd[h+mm][n];
+			if(!sdd)sdd="00";//continue;
+			sh=sides[h];
+			msc=ms[m*2+mm];
+			sft=div=0;
+
+
+		if(cn[h][n]) {
+			cn[h][n].sort(cn_sort);
+			//document.write(""+n+":"+cn[h][n]);
+			for(cni=cn[h][n].length-1; cni>=0; cni--){
+				cnz = cn[h][n][cni][0];
+				cnp = Math.floor(cn[h][n][cni][1]*hs);
+				cnhtmp = cn[h][n][cni][2];
+				if (cnhtmp == undefined) cnhtmp=30;
+				cnh = Math.floor(cnhtmp*hs);
+				cnf = cn[h][n][cni][3];
+				if (cnf == undefined) cnf = 3;
+				if (!cn[h][n][cni][h+3]) cn[h][n][cni][h+3] = [];
+				cnsrd = cn[h][n][cni][h+3][n];
+				
+				for (cnj=0; cnj<(cnz<10 ? 1:2); cnj++) {
+					tmpjpos = (cnj==0) ? cnz%10 : Math.floor(cnz/10);
+					jpos = obr[h-1][tmpjpos];
+					if (hids && tmpjpos==0) continue;
+					if (jpos==8) continue;
+
+					if(sran){
+						if(cnsrd) {
+							jpos = cnsrd;
+						}else if(jpos) {
+							cnorig = jpos;
+							cn[h][n][cni][h+3][n] = cnorig;
+							
+							if(alls&&key==14){
+								for (dpalli=1; dpalli<8; dpalli++) {
+									jpos=dpalls[h-1][dpalli];
+									if (!(   (objtab[cnp*3]&(1<<jpos))
+										  || (objtab[(cnp+cnh+2)*3]&(1<<jpos)))) break;
+								}
+							} else {
+								srancnt=0;
+								do {
+									if(++srancnt>=10000){
+										alert("S-RAN生成失敗により強制終了");
+										break;
+									}
+									jpos = Math.floor(Math.random()*7)+1;
+								} while(   (objtab[cnp*3]&(1<<jpos))
+										|| (objtab[(cnp+cnh+2)*3]&(1<<jpos)));
+							}
+							if(!(cnf&1)){
+								cnend = 0;
+								for(cnmes=n-1; ; cnmes--) {
+									for (cnnow=cn[h][cnmes].length-1; cnnow>=0; cnnow--) {
+										cnpos = cn[h][cnmes][cnnow];
+										if (cnpos[0]==cnorig) {
+											if (!cnpos[h+3])cnpos[h+3] = [];
+											cnpos[h+3][cnmes] = jpos;
+											if (cnpos[3]&1) cnend = 1;
+											break;
+										}
+									}
+									if (cnend==1) break;
+								}
+							}
+							if(!(cnf&2)){
+								cnend = 0;
+								for(cnmes=n+1; ; cnmes++) {
+									for (cnnow=0; cnnow<cn[h][cnmes].length; cnnow++) {
+										cnpos = cn[h][cnmes][cnnow];
+										if (cnpos[0]==cnorig) {
+											if (!cnpos[h+3])cnpos[h+3] = [];
+											cnpos[h+3][cnmes] = jpos;
+											if (cnpos[3]&2) cnend = 1;
+											break;
+										}
+									}
+									if (cnend==1) break;
+								}
+							}
+						}
+						for(cno=cnp*3;cno<=(cnp+cnh+2)*3;cno++){
+							if (!objtab[cno])objtab[cno]=0;
+							objtab[cno]|=(1<<jpos);
+							//memo=objtab[cno];
+						}
+					}
+					if(!legacy) {
+						// obj!
+						stat_insert(h-1, jpos, stat_pos + cnp*3, cnh*3);
+						objstr=imgdir+(!prt&&hcn ? "h":"l")+cob[jpos]+dstr;
+						o+="<img src="+objstr+".gif"+msc+" style='top:"+
+							(nbar*hs-cnp-cnh-1)+"px;left:"+
+							(jpos? jpos*(14-d)-sh*(37-d*8)+61-d*15:(sh-1)*(98-d*7)+2)+
+							"px;height:"+cnh+"px;width:"+(jpos ? 11-d : 32-d*8)+"px'>";
+					}
+					if (cnf&1) {
+						if (jpos) cncnt++;
+						else	  bsscnt++;
+						cnc[h]++;
+						// obj!
+						ttlcn++;
+						if(legacy)stat_insert(h-1, jpos, stat_pos + cnp*3, 0);
+						mss = (!legacy && cnf&4) ? "m":"";
+						objstr=imgdir+(!legacy&&!prt&&hcn ? "hh":"")+co[jpos]+mss+dstr
+						o+="<img src="+objstr+".gif"+msc+" style='top:"+
+							(nbar*hs-cnp+coy)+"px;left:"+
+							(jpos? jpos*(14-d)-sh*(37-d*8)+60-d*15:(sh-1)*(98-d*7))+"px;'>";
+						if(stat_on==0){if(h==1)p1o++;kc[h-1][jpos]++;npos.push((n+gap)*10000000+(cnp+nmergin[n+gap])*100+(h*10+jpos));}
+					}
+					if (cnf&2 && !legacy) {
+						// obj!
+						ttlcn++;
+						mss = (!legacy && cnf&4) ? "m":"";
+						objstr=imgdir+(!prt&&hcn ? "hh":"")+co[jpos]+mss+dstr;
+						o+="<img src="+objstr+".gif"+msc+" style='top:"+
+							(nbar*hs-cnp-cnh+coy)+"px;left:"+
+							(jpos? jpos*(14-d)-sh*(37-d*8)+60-d*15:(sh-1)*(98-d*7))+"px;'>";
+						if(stat_on==0){if(h==1)p1o++;kc[h-1][jpos]++;npos.push((n+gap)*10000000+(cnp+cnh+nmergin[n+gap]-1)*100+(h*10+9));}
+					}
+				}
+			}
+		}
+
+if(sdd.charAt(0)=="#"){
+	sft++;
+	v2c=0;
+	while(sft<sdd.length){
+		v2o="";
+		v2v=(v2c? 1:3)*ln[n]/6;
+		switch(sdd.charAt(sft)){
+			case "C":v2s= 0;v2p=192;v2t=0;if(!v2c)v2o=sdd.charAt(++sft);sft++;break;
+			case "c":v2s=96;v2p=192;v2t=0;if(!v2c)v2o=sdd.charAt(++sft);sft++;break;
+			case "R":v2s= 0;v2p= 96;v2t=0;if(!v2c)v2o=sdd.charAt(++sft);sft++;break;
+			case "r":v2s=48;v2p= 96;v2t=0;if(!v2c)v2o=sdd.charAt(++sft);sft++;break;
+			case "P":v2s= 0;v2p= 48;v2t=0;if(!v2c)v2o=sdd.charAt(++sft);sft++;break;
+			case "p":v2s=24;v2p= 48;v2t=0;if(!v2c)v2o=sdd.charAt(++sft);sft++;break;
+
+			case "B":v2s= 0;v2p=192;v2t=1;v2b=Math.ceil(v2v/v2p)+1;v2o=sdd.substring(sft+1,sft+v2b);sft+=v2b;break;
+			case "b":v2s=96;v2p=192;v2t=1;v2b=Math.ceil(v2v/v2p)+1;v2o=sdd.substring(sft+1,sft+v2b);sft+=v2b;break;
+			case "Q":v2s= 0;v2p= 96;v2t=1;v2b=Math.ceil(v2v/v2p)+1;v2o=sdd.substring(sft+1,sft+v2b);sft+=v2b;break;
+			case "q":v2s=48;v2p= 96;v2t=1;v2b=Math.ceil(v2v/v2p)+1;v2o=sdd.substring(sft+1,sft+v2b);sft+=v2b;break;
+			case "O":v2s= 0;v2p= 48;v2t=1;v2b=Math.ceil(v2v/v2p)+1;v2o=sdd.substring(sft+1,sft+v2b);sft+=v2b;break;
+			case "o":v2s=24;v2p= 48;v2t=1;v2b=Math.ceil(v2v/v2p)+1;v2o=sdd.substring(sft+1,sft+v2b);sft+=v2b;break;
+			case "X":v2s= 0;v2p= 24;v2t=1;v2b=Math.ceil(v2v/v2p)+1;v2o=sdd.substring(sft+1,sft+v2b);sft+=v2b;break;
+			case "x":v2s=12;v2p= 24;v2t=1;v2b=Math.ceil(v2v/v2p)+1;v2o=sdd.substring(sft+1,sft+v2b);sft+=v2b;break;
+			case "Z":v2s= 0;v2p= 12;v2t=1;v2b=Math.ceil(v2v/v2p)+1;v2o=sdd.substring(sft+1,sft+v2b);sft+=v2b;break;
+                                                                                               
+			case "S":v2s= 0;v2p= 64;v2t=1;v2b=Math.ceil(v2v/v2p)+1;v2o=sdd.substring(sft+1,sft+v2b);sft+=v2b;break;
+			case "s":v2s=32;v2p= 64;v2t=1;v2b=Math.ceil(v2v/v2p)+1;v2o=sdd.substring(sft+1,sft+v2b);sft+=v2b;break;
+			case "T":v2s= 0;v2p= 32;v2t=1;v2b=Math.ceil(v2v/v2p)+1;v2o=sdd.substring(sft+1,sft+v2b);sft+=v2b;break;
+			case "t":v2s=16;v2p= 32;v2t=1;v2b=Math.ceil(v2v/v2p)+1;v2o=sdd.substring(sft+1,sft+v2b);sft+=v2b;break;
+			case "U":v2s= 0;v2p= 16;v2t=1;v2b=Math.ceil(v2v/v2p)+1;v2o=sdd.substring(sft+1,sft+v2b);sft+=v2b;break;
+
+			case "1":case "2":case "3":case "4":case "5":case "6":case "7":
+				v2o=sdd.substring(sft,sft+3);v2t=2;sft+=3;break;
+			case "9":v2o="1"+sdd.substring(sft+2,sft+4);
+			case "8":for(i2=0;i2<6;i2++){
+						if(b64.indexOf(sdd.charAt(sft+1))&(1<<i2))v2o+=(i2+2)+sdd.substring(sft+2,sft+4);
+					}v2t=2;sft+=4;break;
+
+			case "-":v2c=1;sft++;break;
+			case "_":v2o=(sft==sdd.length-1)? "AA":sdd.substring(sft+1);v2c=v2t=2;break;
+
+			default:w("<font color=red>error<\/font>");return;
+		}
+		if(sdd.charAt(sft-1)=="-")continue;
+
+		v2k="";
+		if(v2t==1){
+			for(i2=0;i2<v2o.length;i2++){
+				if(v2c==0){
+					v2x=b64.indexOf(v2o.charAt(i2));
+					v2k+=Math.floor(v2x/8)+""+v2x%8;
+				}else if(v2c==1){
+					v2x=b64.indexOf(v2o.charAt(i2));
+					for(i3=5;i3>=0;i3--)v2k+=(v2x>>i3)&1 ? 1:0;
+				}
+			}
+		}else if(v2t==0){
+			for(i2=v2s;i2<ln[n];i2+=v2p)v2k+=(v2c ? "1":v2o);
+		}
+		if(v2t!=2){
+			for(v2i=0,i2=v2s;i2<ln[n];v2i++,i2+=v2p){
+				if(hids && v2c)continue;
+				if((ob2=v2k.charAt(v2i))!=0){
+					if(alls&&key==14){
+						for (dpalli=0; dpalli<8; dpalli++) {
+							ob2=dpalls[h-1][dpalli];
+							if (!(objtab[i2] & (1<<ob2))) break;
+						}
+					}else if(v2c&&!alls){
+						ob2=0;
+						if(conum==0)co[0]=((Math.floor(i2/6/mnbase)%mnloop)==mn)? "r":"s";
+					}else if(sran) {
+						if     (alls) ob2=0;
+						else if (ob2) ob2=Math.floor(Math.random()*7)+1;
+						srancnt=0;
+						while(objtab[i2] & (1<<ob2)) {
+							if(++srancnt>=10000){
+								alert("S-RAN生成失敗により強制終了");
+								break;
+							}
+							ob2=Math.floor(Math.random()*7)+1;
+						}
+					}
+					if(h==1 && stat_on==0)p1o++;
+					objtab[i2] |= (1<<ob2);
+					jpos=obr[h-1][ob2];
+					if(jpos==8)continue;
+					if(stat_on==0){kc[h-1][jpos]++;npos.push((n+gap)*10000000+(Math.floor(i2*hs/3)+nmergin[n+gap])*100+(h*10+jpos));}
+					// obj!
+					stat_insert(h-1, ob2, stat_pos + i2, 0);
+					objstr=imgdir+co[jpos]+dstr;
+					ttl++;
+					o+="<img src="+objstr+".gif"+msc+" name=ttl"+ttl+
+						" onMousedown=dragOn('ttl"+ttl+"') style='top:"+
+						(nbar*hs-Math.floor(i2*hs/3)+coy)+"px;left:"+
+						(ob2 ? jpos*(14-d)-sh*(37-d*8)+60-d*15
+						:(sh-1)*(98-d*7))+"px'>";
+				}
+			}
+		}else{
+			for(i2=0;i2<v2o.length;i2+=2){
+
+				if(v2c==0){ob2=v2o.charAt(i2);i2++;}else ob2=0;
+				if(hids && ob2==0)continue;
+				v2h=b64.indexOf(v2o.charAt(i2))*64+b64.indexOf(v2o.charAt(i2+1))*1;
+				if(alls&&key==14){
+					for (dpalli=0; dpalli<8; dpalli++) {
+						ob2=dpalls[h-1][dpalli];
+						if (!(objtab[v2h] & (1<<ob2))) break;
+					}
+				}else if(mn!=void(0)&&!alls){
+					if(conum==0)co[0]=((Math.floor(v2h/6/mnbase)%mnloop)==mn)? "r":"s";
+				}else if(sran) {
+					if     (alls) ob2=0;
+					else if (ob2) ob2=Math.floor(Math.random()*7)+1;
+					srancnt=0;
+					while(objtab[v2h] & (1<<ob2)){
+						if(++srancnt>=10000){
+							alert("S-RAN生成失敗により強制終了");
+							break;
+						}
+						ob2=Math.floor(Math.random()*7)+1;
+					}
+				}
+				if(h==1 && stat_on==0)p1o++;
+				objtab[v2h] |= (1<<ob2);
+				jpos=obr[h-1][ob2];
+				if(jpos==8)continue;
+				if(stat_on==0){kc[h-1][jpos]++;npos.push((n+gap)*10000000+(Math.floor(v2h*hs/3)+nmergin[n+gap])*100+(h*10+jpos));}
+				// obj!
+				stat_insert(h-1, ob2, stat_pos + v2h, 0);
+				objstr=imgdir+co[jpos]+dstr;
+				ttl++;
+				o+="<img src="+objstr+".gif"+msc+" name=ttl"+ttl+
+					" onMousedown=dragOn('ttl"+ttl+"')  style='top:"+
+					(nbar*hs-Math.floor(v2h*hs/3)+coy)+"px;left:"+
+					(ob2 ? jpos*(14-d)-sh*(37-d*8)+60-d*15
+					:(sh-1)*(98-d*7))+"px'>";
+			}
+		}
+		if(v2c==2)break;
+	}
+}else{
+	if(sdd.charAt(0)=="x"){
+		len=parseInt(sdd.substring(1,4),16);
+		sft=4;
+	}else len=sdd.length;
+	for(;sft<sdd.length;sft+=2,div+=2){
+		while(sdd.charAt(sft)=="@"){
+			div+=parseInt(sd[h+mm][n].substring(sft+1,sft+3),16)*2;
+			sft+=3;
+		}
+		if(mn!=void(0)&&conum==0)co[0]=((Math.floor(nbar*div/(len*2*mnbase))%mnloop)==mn)?"r":"s";
+		y=parseInt(sdd.substring(sft,sft+2),16);
+		for(j=0;j<=ky;j++){
+			if(y>>j==0)break;
+			if(hids && j==0)continue;
+			if(y>>j&1){
+				if(h==1 && stat_on==0)p1o++;
+				jpos = obr[h-1][j];
+				if(jpos==8)continue;
+				if(alls&&key==14){
+					for (dpalli=0; dpalli<8; dpalli++) {
+						jpos=dpalls[h-1][dpalli];
+						if (!(objtab[Math.floor(nbar*div*3/len)] & (1<<jpos))) break;
+					}
+				}else if (sran) {
+					if      (alls) jpos=0;
+					else if (jpos) jpos=Math.floor(Math.random()*7)+1;
+					srancnt=0;
+					while(objtab[Math.floor(nbar*div*3/len)] & (1<<jpos)) {
+						if(++srancnt>=10000){
+							alert("S-RAN生成失敗により強制終了");
+							break;
+						}
+						jpos=Math.floor(Math.random()*7)+1;
+					}
+				}
+				if(stat_on==0){kc[h-1][jpos]++;npos.push((n+gap)*10000000+(Math.floor(nbar*div*hs/len)+nmergin[n+gap])*100+(h*10+jpos));}
+				objtab[Math.floor(nbar*div*3/len)] |= (1<<jpos);
+				// obj!
+				stat_insert(h-1, jpos, stat_pos + nbar*div*3/len, 0);
+				objstr=imgdir+co[jpos]+dstr;
+				ttl++;
+				o+="<img src="+objstr+".gif"+msc+" name=ttl"+ttl+
+					" onMousedown=dragOn('ttl"+ttl+"') style='top:"+
+					(nbar*hs-Math.floor(nbar*div*hs/len)+coy)+"px;left:"+
+					(jpos? jpos*(14-d)-sh*(37-d*8)+60-d*15:(sh-1)*(98-d*7))+"px'>";
+			}
+		}
+	}
+}
+		}
+		objres[h][1]=objtab[0];
+		//document.write(objres[h]);
+	}
