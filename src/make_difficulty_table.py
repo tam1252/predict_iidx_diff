@@ -14,6 +14,8 @@ Level mapping: p5 → 11.0, p95 → 13.0, rounded to 0.25, clipped.
 Output: data/difficulty_table.csv
 """
 
+import re
+
 import numpy as np
 import pandas as pd
 from sklearn.ensemble import GradientBoostingRegressor
@@ -35,17 +37,53 @@ def zscore(v, mu, sigma):
     return (v - mu) / sigma
 
 
-def map_levels(scores, lo=11.0, hi=13.0, p_lo=5, p_hi=95, step=0.1):
+def map_levels(scores, lo=11.5, hi=13.0, p_lo=5, p_hi=95, step=0.1):
     s_lo = np.percentile(scores, p_lo)
     s_hi = np.percentile(scores, p_hi)
     lvl = lo + (scores - s_lo) / (s_hi - s_lo) * (hi - lo)
-    return np.clip(np.round(lvl / step) * step, lo, hi)
+    return np.round(np.clip(np.round(lvl / step) * step, lo, hi), 1)
 
 
 def kojinsa_label(z):
     if pd.isna(z):
         return '—'
     return '高' if z >= 0.8 else ('中' if z >= -0.3 else '低')
+
+
+def _is_leggendaria_title(title):
+    """Return True if the title uses † as a LEGGENDARIA marker (not part of the song name).
+
+    Pattern: title ends with † or †LEGGENDARIA.
+    Excludes: titles where † is mid-word (e.g. perditus†paradisus, Ignis†Iræ).
+    """
+    return bool(re.search(r'†(?:LEGGENDARIA)?$', title))
+
+
+def _fix_leggendaria_entries(df):
+    """Deduplicate and reclassify LEGGENDARIA charts stored as difficulty='A' with † in title.
+
+    1. Drop A-difficulty † rows whose base title has an X-difficulty counterpart (true duplicate).
+    2. Reclassify remaining A-difficulty † rows as difficulty='X' (→ SPL) since they have
+       no X counterpart but are still LEGGENDARIA charts.
+    """
+    x_titles = set(df.loc[df['difficulty'] == 'X', 'title'])
+
+    dag_mask = (df['difficulty'] == 'A') & df['title'].apply(_is_leggendaria_title)
+    dag_idx = df[dag_mask].index
+
+    to_drop, to_reclassify = [], []
+    for idx in dag_idx:
+        base = re.sub(r'†.*$', '', df.at[idx, 'title']).strip()
+        if base in x_titles:
+            to_drop.append(idx)
+        else:
+            to_reclassify.append(idx)
+
+    print(f'Dropping {len(to_drop)} duplicate A-difficulty † entries (X counterpart exists)')
+    print(f'Reclassifying {len(to_reclassify)} A-difficulty † entries to SPL (no X counterpart)')
+    df = df.drop(to_drop).copy()
+    df.loc[to_reclassify, 'difficulty'] = 'X'
+    return df
 
 
 def main():
@@ -55,6 +93,9 @@ def main():
     for col in num_cols:
         if col in df.columns:
             df[col] = pd.to_numeric(df[col], errors='coerce')
+
+    # Fix LEGGENDARIA chart classification before any analysis
+    df = _fix_leggendaria_entries(df)
 
     df['cpi_kojinsa'] = df['cpi_exhard'] - df['cpi_hard']
 
