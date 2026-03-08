@@ -16,7 +16,7 @@ CaptivAte2～覚醒～	X	https://textage.cc/score/16/ckakusei.html?1XC00
 chaplet -IIDX re:build-	A	https://textage.cc/score/33/chaplet.html?1AC00
 CoMAAAAAAA	X	https://textage.cc/score/26/comaaaaa.html?1XC00
 Disco Killer Music Lover	A	https://textage.cc/score/33/discokil.html?1AC00
-DJ RENAMakin' It	A	https://textage.cc/score/33/makin_it.html?1AC00
+Makin' It	A	https://textage.cc/score/33/makin_it.html?1AC00
 Do it!! Do it!!	X	https://textage.cc/score/15/doit_emp.html?1XC00
 ELECTRIC MASSIVE DIVER	A	https://textage.cc/score/18/emassive.html?1AC00
 fixer	A	https://textage.cc/score/33/fixer.html?1AC00

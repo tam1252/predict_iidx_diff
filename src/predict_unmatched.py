@@ -12,6 +12,7 @@ Steps:
 Note: Without CPI/BPI data, accuracy is lower (R²~0.4–0.5 from chart features only).
 """
 
+import re
 import sys
 import time
 
@@ -54,7 +55,12 @@ def load_unmatched():
                 continue
             parts = line.split('\t')
             if len(parts) == 3:
-                songs.append({'title': parts[0], 'difficulty': parts[1], 'url': parts[2]})
+                url = parts[2]
+                # Extract filename from URL: .../score/VER/FILENAME.html?...
+                fn_m = re.search(r'/score/\d+/(\w+)\.html', url)
+                filename = fn_m.group(1) if fn_m else ''
+                songs.append({'title': parts[0], 'difficulty': parts[1],
+                              'url': url, 'filename': filename})
     return songs
 
 
@@ -123,6 +129,7 @@ def main():
             feats = compute_features(score_data)
             row = {
                 'title':      song['title'],
+                'filename':   song['filename'],
                 'chart_type': 'SPA' if song['difficulty'] == 'A' else 'SPL',
                 **feats,
             }
@@ -173,7 +180,7 @@ def main():
     valid['source'] = 'chart_features_only'
 
     # ── Save ──────────────────────────────────────────────────────────────────
-    out_cols = ['title', 'chart_type', 'level',
+    out_cols = ['title', 'filename', 'chart_type', 'level', 'total_notes',
                 'bpi_at_aaa_pred', 'bpi_at_9444_pred', 'cpi_hard_pred', 'cpi_exhard_pred',
                 'source']
     out = valid.sort_values(['level', 'difficulty_score'], ascending=[False, False])[out_cols]

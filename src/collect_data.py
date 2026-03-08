@@ -105,16 +105,24 @@ def parse_titletbl(js_text: str) -> dict[str, list]:
     for m in pattern.finditer(js_text):
         filename = m.group(1)
         raw = m.group(2)
-        # Split carefully: first 3 fields are ints, then 3 are quoted strings
         # Format: version, id, opt, "genre", "artist", "title"
-        parts = re.split(r',\s*', raw.strip(), maxsplit=5)
-        if len(parts) < 6:
-            continue
+        # The genre field may contain commas (e.g. "JUNGLE, DRUM N BASS"), so we cannot
+        # simply split on commas. Instead: extract the 3 leading ints, then find the 3
+        # quoted string fields by walking the remaining text quote-by-quote.
         try:
-            version = int(parts[0].strip())
-            genre  = _extract_title(parts[3])
-            artist = _extract_title(parts[4])
-            title  = _extract_title(parts[5])
+            int_m = re.match(r'\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(.*)', raw.strip(), re.DOTALL)
+            if not int_m:
+                continue
+            version = int(int_m.group(1))
+            rest = int_m.group(4)  # everything after the 3 ints
+
+            # Extract 3 quoted string fields in order, respecting escaped quotes
+            quoted_fields = re.findall(r'"((?:[^"\\]|\\.)*)"', rest)
+            if len(quoted_fields) < 3:
+                continue
+            genre  = _extract_title(f'"{quoted_fields[0]}"')
+            artist = _extract_title(f'"{quoted_fields[1]}"')
+            title  = _extract_title(f'"{quoted_fields[2]}"')
             result[filename] = [version, None, None, genre, artist, title]
         except (ValueError, IndexError):
             pass

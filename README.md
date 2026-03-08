@@ -161,7 +161,7 @@ BPI・CPI データおよびモデル予測で算出した非公式難易度で�
 | レベル | リンク | 曲数 | レベル範囲 |
 | --- | --- | --- | --- |
 | ☆12 SP | [docs/difficulty_table_sp12.md](docs/difficulty_table_sp12.md) | 611曲 | 11.5 〜 13.0 |
-| ☆11 SP | [docs/difficulty_table_sp11.md](docs/difficulty_table_sp11.md) | 668曲 | 11.0 〜 13.0 |
+| ☆11 SP | [docs/difficulty_table_sp11.md](docs/difficulty_table_sp11.md) | 638曲 | 11.0 〜 13.0 |
 
 - 個人差: **高** / **中** / **低** の3段階
 - `*` マークはモデル予測のみ（BPI/CPI 実データなし）

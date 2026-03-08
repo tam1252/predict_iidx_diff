@@ -382,28 +382,49 @@ def _parse_sp_block(block: str, parent_sp: dict | None = None) -> dict:
                     sp[i] = sp.get(ref, parent.get(ref, ""))
             # else: empty/undefined → leave absent (treated as "")
     else:
-        # Format B
-        for m in re.finditer(r'sp\[(\d+)\]\s*=\s*"([^"]*)";', block):
+        # Format B — allow optional whitespace inside sp[ n ] brackets
+        for m in re.finditer(r'sp\[\s*(\d+)\s*\]\s*=\s*"([^"]*)";', block):
             sp[int(m.group(1))] = m.group(2)
-        for m in re.finditer(r'sp\[(\d+)\]\s*=\s*sp\[(\d+)\];', block):
+        for m in re.finditer(r'sp\[\s*(\d+)\s*\]\s*=\s*sp\[\s*(\d+)\s*\];', block):
             dst, src = int(m.group(1)), int(m.group(2))
             sp[dst] = sp.get(src, parent.get(src, ""))
 
     return sp
 
 
+def _extract_balanced_block(text: str, search_start: int = 0) -> tuple[int, int] | None:
+    """Find the balanced {...} block starting at or after search_start.
+
+    Returns (open_pos, close_pos) of the outermost braces, or None.
+    """
+    brace_pos = text.find('{', search_start)
+    if brace_pos == -1:
+        return None
+    depth = 0
+    for i in range(brace_pos, len(text)):
+        if text[i] == '{':
+            depth += 1
+        elif text[i] == '}':
+            depth -= 1
+            if depth == 0:
+                return (brace_pos, i)
+    return None
+
+
 def _extract_difficulty_block(html_text: str, difficulty: str) -> str:
     """
     Extract the JS block corresponding to the given difficulty.
     Based on bms2jsh.js char2 mapping:
-      X → a=1,kuro=1 (LEGGENDARIA, uses if(a) block)
+      X → a=1,kuro=1 (LEGGENDARIA, uses if(a) block + if(kuro) override)
       A → a=1        (ANOTHER,     uses if(a) block)
       L → l=1        (uses if(l) block - rare)
       N → l=1,hps=1  (NORMAL,      uses if(l)? actually separate)
       H → hps=1      (HYPER)
       P → beginner
-    In practice, sp data lives in if(a){} for ANOTHER/LEGGENDARIA,
-    and difficulty-specific blocks for others.
+    In practice, sp data lives in if(a){} for ANOTHER/LEGGENDARIA.
+    For LEGGENDARIA some songs store chart-specific overrides in if(kuro){} inside
+    the if(a){} block. Those overrides are appended so that later sp[n] assignments
+    take precedence over earlier ones when _parse_sp_block processes them.
     Returns the text of the matching if(...){...} block, or full html if not found.
     """
     # Map URL char2 to the JS variable that gates the sp data
@@ -424,17 +445,39 @@ def _extract_difficulty_block(html_text: str, difficulty: str) -> str:
     if not m:
         return html_text  # fallback: use full text
 
-    start = m.end() - 1  # position of the opening '{'
-    depth = 0
-    for i in range(start, len(html_text)):
-        if html_text[i] == '{':
-            depth += 1
-        elif html_text[i] == '}':
-            depth -= 1
-            if depth == 0:
-                return html_text[start:i+1]
+    coords = _extract_balanced_block(html_text, m.start())
+    if coords is None:
+        return html_text
+    open_pos, close_pos = coords
+    block = html_text[open_pos:close_pos + 1]
 
-    return html_text  # fallback
+    return block
+
+
+def _extract_kuro_sp_overrides(block: str) -> dict:
+    """Extract sp[n] override assignments from the if(kuro){} sub-block inside a block.
+
+    Returns a dict of {sp_index: value_string} for all sp[n]="..." and sp[n]=sp[m]
+    assignments found inside the kuro block.  Returns {} if no kuro block exists.
+    """
+    kuro_pat = re.compile(r'if\s*\(\s*kuro\s*\)\s*\{')
+    km = kuro_pat.search(block)
+    if not km:
+        return {}
+    kuro_coords = _extract_balanced_block(block, km.start())
+    if kuro_coords is None:
+        return {}
+    kuro_content = block[kuro_coords[0] + 1:kuro_coords[1]]  # content between { }
+
+    overrides = {}
+    for m in re.finditer(r'sp\[(\d+)\]\s*=\s*"([^"]*)";', kuro_content):
+        overrides[int(m.group(1))] = m.group(2)
+    # Also handle sp[dst]=sp[src] references (resolved from already-seen overrides)
+    for m in re.finditer(r'sp\[(\d+)\]\s*=\s*sp\[(\d+)\];', kuro_content):
+        dst, src = int(m.group(1)), int(m.group(2))
+        if src in overrides:
+            overrides[dst] = overrides[src]
+    return overrides
 
 
 def parse_html(html_text: str, side: int = 1, difficulty: str = 'A') -> dict:
@@ -492,14 +535,36 @@ def parse_html(html_text: str, side: int = 1, difficulty: str = 'A') -> dict:
                 parent_block = html_text[last_sp_pos:sp_end+2]
                 parent_sp = _parse_sp_block(parent_block)
 
-    sp_raw_by_measure = _parse_sp_block(block, parent_sp)
+    # The if(a){} block may contain a nested if(kuro){} sub-block with LEGGENDARIA overrides.
+    # For ANOTHER ('A'): strip the kuro sub-block so only ANOTHER sp[] data is processed.
+    # For LEGGENDARIA ('X'): also strip it from the base block, then re-apply overrides
+    #   separately so they win over the base ANOTHER data.
+    # This prevents kuro sp[] assignments from polluting the ANOTHER chart parse.
+    block_base = block
+    kuro_pat = re.compile(r'if\s*\(\s*kuro\s*\)\s*\{')
+    km = kuro_pat.search(block)
+    if km:
+        kuro_coords = _extract_balanced_block(block, km.start())
+        if kuro_coords:
+            # Replace the entire if(kuro){...} span with whitespace to preserve offsets
+            block_base = block[:km.start()] + ' ' * (kuro_coords[1] - km.start() + 1) + block[kuro_coords[1] + 1:]
+
+    sp_raw_by_measure = _parse_sp_block(block_base, parent_sp)
+
+    # For LEGGENDARIA (X), apply the kuro overrides on top of the base ANOTHER sp dict.
+    if difficulty.upper() == 'X':
+        kuro_overrides = _extract_kuro_sp_overrides(block)
+        sp_raw_by_measure.update(kuro_overrides)
 
     if not sp_raw_by_measure:
         return {"title": title, "notes": [], "measure_lens": measure_lens,
                 "total_notes": 0, "bpm_base": bpm_base, "bpm_changes": bpm_changes}
 
-    # Extract CN arrays from the difficulty block
-    cn_arrays = _parse_cn_arrays(block)
+    # Extract CN arrays.
+    # For ANOTHER (A): use the kuro-stripped block so LEGGENDARIA CN overrides don't bleed in.
+    # For LEGGENDARIA (X): use the original block (kuro inside) so kuro CN array changes apply.
+    cn_block = block if difficulty.upper() == 'X' else block_base
+    cn_arrays = _parse_cn_arrays(cn_block)
 
     # Decode all notes
     notes = decode_textage_sp(sp_raw_by_measure, measure_lens, cn_arrays, side=side, lndef=lndef)

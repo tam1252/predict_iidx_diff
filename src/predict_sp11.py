@@ -10,11 +10,16 @@ Strategy:
 Output: data/difficulty_table_sp11.csv
 """
 
+import json
 import re
+import sys
 
 import numpy as np
 import pandas as pd
 from sklearn.ensemble import GradientBoostingRegressor
+
+sys.path.insert(0, 'src')
+from collect_data import normalize_title, _aggressive_norm
 
 FEATURES = [
     'rand', 'doji', 'kdan', 'tril', 'tate', 'sara', 'cnbs',
@@ -46,6 +51,83 @@ def map_levels_sp12_ref(scores, sp12_scores, lo=11.0, hi=13.0, p_lo=5, p_hi=95, 
     s_hi = np.percentile(sp12_scores, p_hi)   # ☆12 p95 → level 13.0
     lvl = 11.5 + (scores - s_lo) / (s_hi - s_lo) * 1.5
     return np.round(np.clip(np.round(lvl / step) * step, lo, hi), 1)
+
+
+def _build_plain_cpi_lookup():
+    """Build CPI lookup restricted to non-[L] entries only."""
+    with open('data/raw/cpi_raw_dump.json', encoding='utf-8') as f:
+        raw = json.load(f)
+    headers = [h.lower() for h in raw['headers']]
+    plain = {row[0]: dict(zip(headers[1:], row[1:]))
+             for row in raw['result'] if not row[0].endswith('[L]')}
+    norm    = {normalize_title(t): v for t, v in plain.items()}
+    agg     = {_aggressive_norm(t): v for t, v in plain.items()}
+    return norm, agg
+
+
+def _drop_sp12_spl_duplicates(df11, sp12_path='data/features_sp12.csv',
+                              unmatched_path='data/difficulty_table_unmatched.csv'):
+    """Remove ☆11 A-difficulty songs whose ANOTHER chart is identical to the ☆12 SPL chart.
+
+    Some textage songs share one HTML file for both ANOTHER (☆11) and LEGGENDARIA (☆12).
+    When the two charts are truly identical (same total_notes), the ☆11 A row is a
+    duplicate of the ☆12 SPL row and should be dropped.
+    Songs where ANOTHER != LEGGENDARIA (different note counts) are genuine ☆11 charts
+    and should be kept.
+    Checks both features_sp12.csv (BPI-matched songs) and difficulty_table_unmatched.csv
+    (BPI-unmatched songs that still appear as ☆12 SPL).
+    """
+    import os
+    df12 = pd.read_csv(sp12_path, keep_default_na=False, na_values=[''])
+    spl_notes = df12.loc[df12['difficulty'] == 'X'].set_index('filename')['total_notes'].to_dict()
+
+    # Also include unmatched ☆12 SPL songs if filename/total_notes columns are present
+    if os.path.exists(unmatched_path):
+        uf = pd.read_csv(unmatched_path, keep_default_na=False, na_values=[''])
+        if 'filename' in uf.columns and 'total_notes' in uf.columns:
+            for _, r in uf[uf['chart_type'] == 'SPL'].iterrows():
+                fn = r['filename']
+                if fn and fn not in spl_notes:
+                    spl_notes[fn] = int(r['total_notes'])
+
+    def _is_true_duplicate(row):
+        if row['difficulty'] != 'A':
+            return False
+        fn = row['filename']
+        if fn not in spl_notes:
+            return False
+        # Drop only when note counts match exactly (truly identical chart)
+        return int(row['total_notes']) == int(spl_notes[fn])
+
+    mask = df11.apply(_is_true_duplicate, axis=1)
+    n = mask.sum()
+    kept = ((df11['difficulty'] == 'A') & df11['filename'].isin(spl_notes) & ~mask).sum()
+    print(f'  Dropping {n} ☆11 A-difficulty rows that are ☆12 SPL duplicates '
+          f'(keeping {kept} with different charts)')
+    return df11[~mask].copy()
+
+
+def _clear_invalid_cpi(df):
+    """Clear CPI columns for A-difficulty songs that only matched a [L] CPI entry.
+
+    The _aggressive_norm function strips ' [L]' suffixes, causing ☆11 ANOTHER charts
+    (e.g. SAMURAI-Scramble SPA) to incorrectly match the LEGGENDARIA CPI entry.
+    Only keep CPI data when a genuine plain (non-[L]) CPI entry exists.
+    """
+    plain_norm, plain_agg = _build_plain_cpi_lookup()
+    cpi_cols = ['cpi_easy', 'cpi_clear', 'cpi_hard', 'cpi_exhard', 'cpi_fc', 'cpi_kojinsa']
+    mask = df['difficulty'] == 'A'
+    cleared = 0
+    for idx in df[mask].index:
+        t = df.at[idx, 'title']
+        has_plain = (normalize_title(t) in plain_norm or _aggressive_norm(t) in plain_agg)
+        if not has_plain and df.at[idx, 'cpi_hard'] != '':
+            for col in cpi_cols:
+                if col in df.columns:
+                    df.at[idx, col] = np.nan
+            cleared += 1
+    print(f'  Cleared invalid [L] CPI matches for {cleared} A-difficulty songs')
+    return df
 
 
 def _fix_leggendaria(df):
@@ -120,6 +202,8 @@ def main():
     for col in FEATURES + ['cpi_hard', 'cpi_exhard']:
         if col in df11.columns:
             df11[col] = pd.to_numeric(df11[col], errors='coerce')
+    df11 = _drop_sp12_spl_duplicates(df11)
+    df11 = _clear_invalid_cpi(df11)
     df11['cpi_kojinsa'] = df11['cpi_exhard'] - df11['cpi_hard']
     print(f'  Total ☆11 songs before dedup: {len(df11)}')
     df11 = _fix_leggendaria(df11)
