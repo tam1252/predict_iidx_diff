@@ -43,15 +43,12 @@ def build_time_map(
         result += pos
         return result
 
-    def pos_to_beats(delta_pos: float, seg_lndef: float) -> float:
-        """Convert delta score-position to beats, accounting for time signature.
-        Each measure has `ln_n` pos units. The ratio ln_n/lndef gives the
-        time-signature multiplier (e.g. 0.75 for 3/4, 1.25 for 5/4).
-        1 measure = 4 beats in 4/4, so beats = delta_pos / lndef * 4.
-        For other time signatures: beats = delta_pos / seg_lndef * 4 * (seg_lndef/lndef)
-        which simplifies to delta_pos * 4 / lndef — always divide by global lndef.
+    def pos_to_beats(delta_pos: float, seg_lndef: float = 0) -> float:
+        """Convert delta score-position to beats.
+        1 beat (1/4 note) = 96 pos units, universally across all time signatures.
+        LNDEF=384 (4/4) → 4 beats/measure, LNDEF=288 (3/4) → 3 beats/measure, etc.
         """
-        return delta_pos * 4.0 / lndef
+        return delta_pos / 96.0
 
     # Breakpoints: [(abs_pos, bpm), ...]
     breakpoints = [(0.0, initial_bpm)]
@@ -73,8 +70,7 @@ def build_time_map(
         prev_pos, prev_bpm = breakpoints[i - 1]
         curr_pos, _ = breakpoints[i]
         delta_pos = curr_pos - prev_pos
-        # 1 measure = lndef pos units = 4 beats → each pos unit = 4/lndef beats
-        beats = delta_pos * 4.0 / lndef
+        beats = delta_pos / 96.0  # 1 beat = 96 pos units (universal)
         seconds = beats * 60.0 / prev_bpm
         bp_times.append(bp_times[-1] + seconds)
 
@@ -89,7 +85,7 @@ def build_time_map(
                 break
         seg_pos, seg_bpm = breakpoints[idx]
         delta_pos = abs_pos - seg_pos
-        beats = delta_pos * 4.0 / lndef
+        beats = delta_pos / 96.0  # 1 beat = 96 pos units (universal)
         seconds = beats * 60.0 / seg_bpm
         return bp_times[idx] + seconds
 
@@ -152,7 +148,20 @@ def analyze_density(
 
     all_times   = [n['time'] for n in timed_notes]
     scratch_times = [n['time'] for n in timed_notes if n['key'] == 0]
-    duration = max(all_times)
+
+    # Use end of last measure as duration (not just last note time)
+    measure_count = parse_result.get('measure_count', 0)
+    if measure_count:
+        end_notes = build_time_map(
+            notes=[{'measure': measure_count + 1, 'pos': 0, 'key': 1, 'type': 'normal'}],
+            measure_lens=parse_result['measure_lens'],
+            bpm_changes=parse_result['bpm_changes'],
+            bpm_base=parse_result['bpm_base'],
+            lndef=lndef,
+        )
+        duration = end_notes[0]['time'] if end_notes else max(all_times)
+    else:
+        duration = max(all_times)
 
     timeline = []
     t = 0.0
@@ -488,7 +497,7 @@ def calc_textage_scores(parse_result: dict) -> dict:
                     break
             seg_pos, seg_bpm = bkpts[idx]
             delta_pos = abs_pos - seg_pos
-            beats = delta_pos * 4.0 / lndef
+            beats = delta_pos / 96.0
             return bp_times_list[idx] + beats * 60.0 / seg_bpm
         return fn
 
@@ -505,7 +514,7 @@ def calc_textage_scores(parse_result: dict) -> dict:
     for i in range(1, len(bkpts)):
         pp, pb = bkpts[i-1]
         cp, _ = bkpts[i]
-        beats = (cp - pp) * 4.0 / lndef
+        beats = (cp - pp) / 96.0
         bp_times_list.append(bp_times_list[-1] + beats * 60.0 / pb)
 
     # BPM timeline: [(time, bpm), ...]

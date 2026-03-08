@@ -344,7 +344,9 @@ def _parse_bpm_changes(html_text: str) -> list[dict]:
             pos_str = entry[3:].strip() if len(entry) > 3 else "0"
             try:
                 bpm = int(bpm_str)
-                pos = int(pos_str) if pos_str else 0
+                # pos_str is in nbar-row units; multiply by 3 to get note pos units
+                # (same scale as hex-format note positions: pos = nbar * div * 3 / sft_len)
+                pos = int(pos_str) * 3 if pos_str else 0
                 changes.append({"measure": measure, "pos": pos, "bpm": bpm})
             except ValueError:
                 pass
@@ -460,6 +462,9 @@ def parse_html(html_text: str, side: int = 1, difficulty: str = 'A') -> dict:
     title_m = re.search(r'title\s*=\s*"([^"]+)"', html_text)
     title = title_m.group(1) if title_m else ""
 
+    measure_count_m = re.search(r'\bmeasure\s*=\s*(\d+)\s*;', html_text)
+    measure_count = int(measure_count_m.group(1)) if measure_count_m else 0
+
     bpm_m = re.search(r'\bbpm\s*=\s*"([^"]+)"', html_text)
     bpm_base = bpm_m.group(1) if bpm_m else ""
 
@@ -507,6 +512,7 @@ def parse_html(html_text: str, side: int = 1, difficulty: str = 'A') -> dict:
         "bpm_base": bpm_base,
         "bpm_changes": bpm_changes,
         "lndef": lndef,
+        "measure_count": measure_count,
     }
 
 

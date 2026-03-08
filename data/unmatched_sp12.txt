@@ -1,0 +1,82 @@
+# ☆12 SP songs not matched to CPI data (80 songs)
+# title	difficulty	url
+"[	A	https://textage.cc/score/30/_dentity.html?1AC00
+"Friction[!	A	https://textage.cc/score/27/friction.html?1AC00
+,	A	https://textage.cc/score/29/gigagahl.html?1AC00
+2 Be Continued	A	https://textage.cc/score/33/2beconti.html?1AC00
+27th style	X	https://textage.cc/score/27/27thstyl.html?1XC00
+3!dolon Forc3	A	https://textage.cc/score/28/3idolonf.html?1AC00
+ALL MY TURN-このターンに、オレの全てを賭ける-	X	https://textage.cc/score/16/almyturn.html?1XC00
+Amor∞Fati	A	https://textage.cc/score/33/amorfati.html?1AC00
+anthracene	A	https://textage.cc/score/30/anthracn.html?1AC00
+Astra Blaze	A	https://textage.cc/score/33/astrablz.html?1AC00
+Beat Juggling Mix	X	https://textage.cc/score/24/beatjugg.html?1XC00
+Begin	A	https://textage.cc/score/33/begin.html?1AC00
+CaptivAte2～覚醒～	X	https://textage.cc/score/16/ckakusei.html?1XC00
+chaplet -IIDX re:build-	A	https://textage.cc/score/33/chaplet.html?1AC00
+CoMAAAAAAA	X	https://textage.cc/score/26/comaaaaa.html?1XC00
+Disco Killer Music Lover	A	https://textage.cc/score/33/discokil.html?1AC00
+DJ RENAMakin' It	A	https://textage.cc/score/33/makin_it.html?1AC00
+Do it!! Do it!!	X	https://textage.cc/score/15/doit_emp.html?1XC00
+ELECTRIC MASSIVE DIVER	A	https://textage.cc/score/18/emassive.html?1AC00
+fixer	A	https://textage.cc/score/33/fixer.html?1AC00
+FiZZλ_PØT!OИ	A	https://textage.cc/score/33/fizzyptn.html?1AC00
+Flämingo	A	https://textage.cc/score/32/flamingo.html?1AC00
+From Human Blood	A	https://textage.cc/score/33/frmhuman.html?1AC00
+G2	X	https://textage.cc/score/6/g2.html?1XC00
+GAMBOL	A	https://textage.cc/score/1/gambolhs.html?1AC00
+HEROES	A	https://textage.cc/score/33/heroes.html?1AC00
+Hollywood Galaxy(DJ NAGAI Remix)	A	https://textage.cc/score/22/hlywd_ng.html?1AC00
+HyperTwist	A	https://textage.cc/score/33/hyptwist.html?1AC00
+Immortal	A	https://textage.cc/score/21/immortal.html?1AC00
+INAZUMA	X	https://textage.cc/score/12/inazuma.html?1XC00
+INHERITANCE	X	https://textage.cc/score/31/inherita.html?1XC00
+King of Tribe	A	https://textage.cc/score/33/kingtrib.html?1AC00
+L.E.D. & HuΣeR\,	A	https://textage.cc/score/28/dualstr.html?1AC00
+Like+it!	X	https://textage.cc/score/27/like_it.html?1XC00
+Lisa-RICCIA	A	https://textage.cc/score/33/lisa_ric.html?1AC00
+Ludus In Tenebris	A	https://textage.cc/score/22/ludus_in.html?1AC00
+M.D.Injection	X	https://textage.cc/score/21/mdinject.html?1XC00
+Memoria Obscura	A	https://textage.cc/score/33/memoriao.html?1AC00
+MENTAL MELTDOWN	X	https://textage.cc/score/15/meltdown.html?1XC00
+PERFECT GREAT!!	A	https://textage.cc/score/33/pergreat.html?1AC00
+Pinky Happy Crazy	A	https://textage.cc/score/32/pinkycrz.html?1AC00
+Plazma	X	https://textage.cc/score/32/plazma.html?1XC00
+Please Welcome Mr.C	A	https://textage.cc/score/26/pls_mr_c.html?1AC00
+POLꓘAMAИIA	X	https://textage.cc/score/28/plkmania.html?1XC00
+RALLY '25	A	https://textage.cc/score/33/rally_25.html?1AC00
+Regina vespaE	A	https://textage.cc/score/33/regina_v.html?1AC00
+RINИE	A	https://textage.cc/score/30/rinne.html?1AC00
+RIZING-GAMERS.	A	https://textage.cc/score/33/rizingms.html?1AC00
+Scripted Connection⇒	A	https://textage.cc/score/12/scripted.html?1AC00
+SEITEN NO TERIYAKI	X	https://textage.cc/score/23/sei_teri.html?1XC00
+Session 12-Esther-	A	https://textage.cc/score/19/sesion12.html?1AC00
+Skreaming for Salvation	A	https://textage.cc/score/29/skrmsalv.html?1AC00
+Space Battleship S4TØ	A	https://textage.cc/score/33/spc_s4to.html?1AC00
+Submerge Serenade	X	https://textage.cc/score/31/submerge.html?1XC00
+Super Duper Racers	X	https://textage.cc/score/23/superdup.html?1XC00
+Sweet Clapper	X	https://textage.cc/score/24/sclapper.html?1XC00
+THE CANNONBALLER	X	https://textage.cc/score/25/tcannonb.html?1XC00
+tripping contact	A	https://textage.cc/score/13/tripping.html?1AC00
+UNDO THE NIGHT	A	https://textage.cc/score/33/undonigt.html?1AC00
+uәn	A	https://textage.cc/score/32/_uen.html?1AC00
+VOX RUSH	A	https://textage.cc/score/25/vox_rush.html?1AC00
+Xlø	A	https://textage.cc/score/26/xlo.html?1AC00
+ÆTHER	X	https://textage.cc/score/21/_aether.html?1XC00
+Übertreffen†	A	https://textage.cc/score/15/ubertrel.html?1AC00
+ιgniЯRuina	A	https://textage.cc/score/33/_ignirru.html?1AC00
+Χ-DEN	A	https://textage.cc/score/26/_kai_den.html?1AC00
+⁽⁽ଘ( ˙꒳˙ )ଓ⁾⁾ beyond reason	A	https://textage.cc/score/33/_beyondr.html?1AC00
+ちょえちょえまぎか	X	https://textage.cc/score/30/_choe.html?1XC00
+キャトられ♥恋はモ～モク	A	https://textage.cc/score/20/_kyatora.html?1AC00
+クレッシェンド	A	https://textage.cc/score/33/_crescnd.html?1AC00
+セピアの軌跡 ft. 天宮みや(少女フラクタル)	X	https://textage.cc/score/27/_sepiano.html?1XC00
+デモーニッシュ	X	https://textage.cc/score/29/_damonis.html?1XC00
+ビビッド ☆＋＊。キラキライム	A	https://textage.cc/score/33/_vividkr.html?1AC00
+ミュージック・アワー	X	https://textage.cc/score/29/_mschour.html?1XC00
+ユミル	X	https://textage.cc/score/19/_ymir.html?1XC00
+俺ら東京さ行ぐだ	X	https://textage.cc/score/27/_oratoky.html?1XC00
+八戸亀生羅\,	A	https://textage.cc/score/28/_spbaban.html?1AC00
+焱影	A	https://textage.cc/score/24/_hikage.html?1AC00
+色を喪った街	A	https://textage.cc/score/33/_iro_usi.html?1AC00
+表裏一体!?怪盗いいんちょの悩み♥	A	https://textage.cc/score/22/_hyouri.html?1AC00
