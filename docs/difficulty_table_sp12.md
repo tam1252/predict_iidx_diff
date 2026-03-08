@@ -8,7 +8,7 @@ BPI・CPI データをもとにモデルで算出した非公式難易度です�
 
 ---
 
-## 13.0  （30 曲）
+## 13.0  （29 曲）
 
 ### SPA
 
@@ -17,7 +17,9 @@ BPI・CPI データをもとにモデルで算出した非公式難易度です�
 | DIAVOLO | 低 |
 | Dans la nuit de l'éternité | 低 |
 | Fascination MAXX | 低 |
+| GiGaGaHell * | — |
 | Level 5 | 低 |
+| Makin' It * | — |
 | Mare Nectaris | 低 |
 | RAGE feat.H14 of LEONAIR | 低 |
 | Sinus Iridum | 低 |
@@ -42,25 +44,23 @@ BPI・CPI データをもとにモデルで算出した非公式難易度です�
 | 曲名 | 個人差 |
 |------|--------|
 | 27th style * | — |
-| CODE:Ø * | — |
 | ICARUS† | 低 |
 | Illegal Function Call | 低 |
 | Miracle 5ympho X | 低 |
 | SAMURAI-Scramble | 低 |
-| Sigmund†LEGGENDARIA | 低 |
-| 疾風迅雷†LEGGENDARIA | 低 |
 
-## 12.9  （8 曲）
+## 12.9  （9 曲）
 
 ### SPA
 
 | 曲名 | 個人差 |
 |------|--------|
 | Go Beyond!! | 低 |
+| HEROES * | — |
 | Inferno of Fomalhaut | 低 |
 | Level 4 | 低 |
-| Makin' It * | — |
 | Plan 8 | 低 |
+| Session 12-Esther- * | — |
 | THE PEERLESS UNDER HEAVEN | 低 |
 | VØID | 低 |
 | 二人ノ廃城幽踊宴 | 低 |
@@ -73,13 +73,12 @@ BPI・CPI データをもとにモデルで算出した非公式難易度です�
 |------|--------|
 | 3y3s | 低 |
 | Carmina | 低 |
-| DAY DREAM | 低 |
+| GiGaGaHell * | — |
 | Glitch N Ride | 低 |
 | Go Ahead!! | 低 |
 | Ignis†Iræ | 低 |
 | Level One | 低 |
 | Red. by Jack Trance | 低 |
-| Session 12-Esther- * | — |
 | The Chase | 低 |
 | perditus†paradisus | 低 |
 | Χ-DEN * | — |
@@ -90,25 +89,24 @@ BPI・CPI データをもとにモデルで算出した非公式難易度です�
 
 | 曲名 | 個人差 |
 |------|--------|
+| CODE:Ø * | — |
 | KAMAITACHI | 低 |
 | カジノファイヤーことみちゃん * | — |
 
-## 12.7  （18 曲）
+## 12.7  （15 曲）
 
 ### SPA
 
 | 曲名 | 個人差 |
 |------|--------|
+| DAY DREAM | 低 |
 | Everlasting Message | 低 |
-| FiZZλ_PØT!OИ * | — |
 | LOCUS OF THE TRAVEL | 低 |
 | Level 3 | 低 |
 | Sigmund | 低 |
+| Sigmund | 低 |
 | The Clown of 24stairs | 低 |
-| fixer * | — |
-| 天使のカンタータ -Cantata of Angels- | 低 |
 | 焔極OVERKILL | 低 |
-| 華麗なる大犬円舞曲 | 低 |
 
 ### SPL
 
@@ -121,9 +119,8 @@ BPI・CPI データをもとにモデルで算出した非公式難易度です�
 | TRANOID | 低 |
 | Time to Air | 低 |
 | VANESSA† | 低 |
-| Verflucht†LEGGENDARIA | 低 |
 
-## 12.6  （30 曲）
+## 12.6  （28 曲）
 
 ### SPA
 
@@ -131,26 +128,24 @@ BPI・CPI データをもとにモデルで算出した非公式難易度です�
 |------|--------|
 | 199024club -Re:BounceKiller- | 低 |
 | Ambivalent Vermilia | 低 |
-| Amor∞Fati * | — |
 | BLUE MIRAGE | 低 |
 | Bad Encryption | 低 |
 | DUE TOMORROW | 低 |
 | Elemental Creation | 低 |
+| FiZZλ_PØT!OИ * | — |
 | GuNGNiR | 低 |
-| HEROES * | — |
 | ICARUS | 低 |
 | IX | 低 |
 | JOMANDA | 低 |
 | Snake Stick | 低 |
 | TOMAHAWK | 低 |
-| Timepiece phase II(CN Ver.) | 低 |
 | VOX UP | 低 |
 | voltississimo | 低 |
 | シムルグの目醒め | 低 |
 | ピアノ協奏曲第１番\ | 低 |
 | 東京神話 | 低 |
-| 栄冠のカンパネラ | 低 |
-| 焱影 * | — |
+| 灼熱Beach Side Bunny | 低 |
+| 華麗なる大犬円舞曲 | 低 |
 
 ### SPL
 
@@ -158,21 +153,21 @@ BPI・CPI データをもとにモデルで算出した非公式難易度です�
 |------|--------|
 | Be quiet | 低 |
 | Beat Juggling Mix * | — |
+| Do it!! Do it!! * | — |
 | KAISER PHOENIX† | 低 |
 | MAD ATTACK | 低 |
 | REVOLVER | 低 |
 | four pieces of heaven | 低 |
 | お米の美味しい炊き方、そしてお米を食べることによるその効果。 | 低 |
-| 君のハートにロックオン | 低 |
 
-## 12.5  （27 曲）
+## 12.5  （30 曲）
 
 ### SPA
 
 | 曲名 | 個人差 |
 |------|--------|
-| , * | — |
 | 3!dolon Forc3 * | — |
+| Amor∞Fati * | — |
 | Binary Black Hole | 低 |
 | Blue Spring Express | 低 |
 | COSMIC RAY | 低 |
@@ -185,10 +180,15 @@ BPI・CPI データをもとにモデルで算出した非公式難易度です�
 | Smashing Wedge | 低 |
 | The Rebellion of Sequencer | 低 |
 | Unbelief | 低 |
+| Xlø * | — |
+| fixer * | — |
 | ra'am | 低 |
 | rage against usual | 低 |
+| キャトられ♥恋はモ～モク * | — |
 | スキッテイエェエエェ!!!! | 低 |
-| 色を喪った街 * | — |
+| 栄冠のカンパネラ | 低 |
+| 焱影 * | — |
+| 疾風迅雷 | 低 |
 | 金野火織の金色提言 | 低 |
 | 魔法のかくれんぼ | 低 |
 
@@ -196,43 +196,38 @@ BPI・CPI データをもとにモデルで算出した非公式難易度です�
 
 | 曲名 | 個人差 |
 |------|--------|
-| Do it!! Do it!! * | — |
-| Feel The Beat†LEGGENDARIA | 低 |
 | Ganymede | 低 |
 | Phoenix | 低 |
 | Saturn | 低 |
 | THE CANNONBALLER * | — |
-| invoker†LEGGENDARIA | 低 |
+| 君のハートにロックオン | 低 |
 
-## 12.4  （43 曲）
+## 12.4  （38 曲）
 
 ### SPA
 
 | 曲名 | 個人差 |
 |------|--------|
 | 2 Beasts Unchained | 低 |
-| ASIAN VIRTUAL REALITIES (MELTING TOGETHER IN DAZZLING DARKNESS) | 低 |
 | Almagest | 低 |
 | Artist | 低 |
 | Cross Fire | 低 |
 | DropZ-Line- | 低 |
-| GAMBOL * | — |
-| GO OVER WITH GLARE -ROOTAGE 26- | 低 |
+| IMPLANTATION * | — |
 | KAISER PHOENIX | 低 |
-| Memoria Obscura * | — |
 | Mächö Mönky | 低 |
 | PARADISE LOST | 低 |
 | PARANOiA ～HADES～ | 低 |
 | Peaktime Booster | 低 |
+| RIZING-GAMERS. * | — |
 | Reflux | 低 |
 | SISYPHUS | 低 |
-| Skreaming for Salvation * | — |
 | StrayedCatz | 低 |
 | Watch Out Pt.2 | 低 |
 | Zirkfied | 低 |
 | reunion | 低 |
 | ruin of opals | 低 |
-| キャトられ♥恋はモ～モク * | — |
+| ⁽⁽ଘ( ˙꒳˙ )ଓ⁾⁾ beyond reason * | — |
 | 共鳴遊戯の華 | 低 |
 | 子供の落書き帳 | 低 |
 | 恋する☆宇宙戦争っ!! | 低 |
@@ -241,25 +236,23 @@ BPI・CPI データをもとにモデルで算出した非公式難易度です�
 | 烽火連天の刃 | 低 |
 | 煉獄のエルフェリア | 低 |
 | 聖人の塔 | 低 |
+| 色を喪った街 * | — |
 | 魅惑のYUMMYスイーツ | 低 |
 
 ### SPL
 
 | 曲名 | 個人差 |
 |------|--------|
-| Ancient Scapes†LEGGENDARIA | 低 |
 | BroGamer | 低 |
 | CONTRACT | 低 |
 | HYENA | 低 |
 | Lost Souls | 低 |
-| NEW GENERATION-もう、お前しか見えない- | 低 |
-| POLꓘAMAИIA * | — |
 | STEEL NEEDLE | 低 |
 | Violet Pulse | 低 |
 | 廿 | 低 |
 | 超青少年ノ為ノ超多幸ナ超古典的超舞曲 | 低 |
 
-## 12.3  （41 曲）
+## 12.3  （40 曲）
 
 ### SPA
 
@@ -274,28 +267,27 @@ BPI・CPI データをもとにモデルで算出した非公式難易度です�
 | DORNWALD ～Junge～ | 低 |
 | Devilz Staircase | 低 |
 | Empire of Fury | 低 |
+| GAMBOL * | — |
 | HADES | 低 |
 | HAERETICUS | 低 |
-| IMPLANTATION * | — |
 | INSOMNIA | 低 |
 | Level 2 | 低 |
 | MAX 300 | 低 |
+| Memoria Obscura * | — |
 | Monopole. | 低 |
 | OTENAMI Hurricane | 低 |
 | Pinky Happy Crazy * | — |
-| Push on Beats!～音ゲの国のeX-ストリーマー～ | 低 |
-| RIZING-GAMERS. * | — |
 | STULTI | 低 |
-| Scripted Connection⇒ * | — |
+| Skreaming for Salvation * | — |
 | TECHNOPHOBIA | 低 |
 | THE F∀UST | 低 |
 | Timepiece phase II | 低 |
+| Timepiece phase II | 低 |
 | UNDO THE NIGHT * | — |
-| Uaigh Gealaí | 低 |
-| Xlø * | — |
+| Verflucht | 低 |
 | kors k's How to make OTOGE CORE 「LONG」 | 低 |
-| ⁽⁽ଘ( ˙꒳˙ )ଓ⁾⁾ beyond reason * | — |
 | がっつり陰キャ!?怪盗いいんちょの億劫^^; | 低 |
+| ピアノ協奏曲第１番\ | 低 |
 | ワルツ第17番 ト短調\ | 低 |
 | 嘆きの樹 | 低 |
 | 灼熱 Lost Summer Dayz | 低 |
@@ -305,14 +297,14 @@ BPI・CPI データをもとにモデルで算出した非公式難易度です�
 
 | 曲名 | 個人差 |
 |------|--------|
-| B4U(BEMANI FOR YOU MIX) | 低 |
 | Caldwell 99 * | — |
-| Close the World feat.a☆ru†LEGGENDARIA | 低 |
+| INAZUMA * | — |
 | Override | 低 |
 | SOLID WYVERN | 低 |
 | Secrets | 低 |
+| 俺ら東京さ行ぐだ * | — |
 
-## 12.2  （60 曲）
+## 12.2  （53 曲）
 
 ### SPA
 
@@ -321,7 +313,6 @@ BPI・CPI データをもとにモデルで算出した非公式難易度です�
 | "Friction[! * | — |
 | Angel's Ladder | 低 |
 | BLACK or WHITE? | 低 |
-| BLUE DRAGON(雷龍RemixIIDX) | 低 |
 | Caterpillar | 低 |
 | Concertino in Blue | 低 |
 | DEADHEAT | 低 |
@@ -329,12 +320,11 @@ BPI・CPI データをもとにモデルで算出した非公式難易度です�
 | Devil's Gear | 低 |
 | Dynamite | 低 |
 | Flashes | 低 |
-| Flämingo * | — |
 | Grand Chariot | 低 |
 | I | 低 |
+| Immortal * | — |
 | Innocent Walls | 低 |
 | Invitation from Mr.C | 低 |
-| LASER CRUSTER (IGNITE REMIX) | 低 |
 | LOST TECHNOLOGIE | 低 |
 | MAXIMUM CHEAT GIRL | 低 |
 | NITROUS CANNON | 低 |
@@ -346,21 +336,18 @@ BPI・CPI データをもとにモデルで算出した非公式難易度です�
 | Papilio ulysses | 低 |
 | Red. by Full Metal Jacket | 低 |
 | Satellite Burst | 低 |
-| Session 9-Chronicles- | 低 |
+| Scripted Connection⇒ * | — |
 | Trill auf G | 低 |
+| Uaigh Gealaí | 低 |
 | VOLAQUAS | 低 |
 | Vitrum | 低 |
 | Without Heaven | 低 |
 | Xb10r | 低 |
+| chaplet -IIDX re:build- * | — |
 | eRAseRmOToRpHAntOM | 低 |
 | hora de verdad | 低 |
-| quell～the seventh slave～ | 低 |
 | suspicions | 低 |
-| tripping contact * | — |
-| †渚の小悪魔ラヴリィ～レイディオ†(IIDX EDIT) | 低 |
 | アストライアの双皿 | 低 |
-| ピアノ協奏曲第１番\ (BlackY Remix) | 低 |
-| 世界の果てに約束の凱歌を -ReUnion- | 低 |
 | 今宵、ロマンス横丁。 | 低 |
 | 天空の夜明け | 低 |
 | 少年は空を辿る | 低 |
@@ -373,18 +360,16 @@ BPI・CPI データをもとにモデルで算出した非公式難易度です�
 | 曲名 | 個人差 |
 |------|--------|
 | AIR RAID FROM THA UNDAGROUND | 低 |
-| ALBA-黎明- * | — |
-| Anisakis-somatic mutation type \- | 低 |
 | Bow shock!! | 低 |
-| CoMAAAAAAA * | — |
 | G2 * | — |
 | O/D*20 | 低 |
+| POLꓘAMAИIA * | — |
+| Submerge Serenade * | — |
 | THANK YOU FOR PLAYING | 低 |
 | Twelfth Style | 低 |
 | ZEPHYRANTHES | 低 |
-| 俺ら東京さ行ぐだ * | — |
 
-## 12.1  （61 曲）
+## 12.1  （62 曲）
 
 ### SPA
 
@@ -395,21 +380,22 @@ BPI・CPI データをもとにモデルで算出した非公式難易度です�
 | AO-1 | 低 |
 | Bad Maniacs | 低 |
 | Boomy and The Boost | 低 |
+| Disco Killer Music Lover * | — |
 | Drop Syndicate | 低 |
 | FAKE TIME | 低 |
 | FANTASTIC THREE | 低 |
 | Fire Beat | 低 |
+| Flämingo * | — |
 | G59 | 低 |
 | GAME ON | 低 |
 | Hollywood Galaxy | 低 |
 | Illusionary Waterlily | 低 |
-| Immortal * | — |
 | MENDES | 低 |
 | Million Dollar | 低 |
 | NOIXIA | 低 |
 | One More Lovely | 低 |
-| PERFECT GREAT!! * | — |
 | Painful Fate | 低 |
+| Please Welcome Mr.C * | — |
 | Proof of the existence | 低 |
 | Regina vespaE * | — |
 | SCREAM SQUAD | 低 |
@@ -427,37 +413,37 @@ BPI・CPI データをもとにモデルで算出した非公式難易度です�
 | Verflucht | 低 |
 | Xperanza | 低 |
 | YAKSHA | 低 |
-| chaplet -IIDX re:build- * | — |
 | dica dica | 低 |
-| fallen leaves -IIDX edition- | 低 |
 | fffff | 低 |
 | innocent revolver | 低 |
 | one or eight | 低 |
-| ιgniЯRuina * | — |
+| Übertreffen† * | — |
 | ∀ | 低 |
 | ぞうしょく！？マイデンティティ | 低 |
 | アラビアン ハイパー ナイト | 低 |
-| 伐折羅-vajra- | 低 |
 | 少年A | 低 |
 | 未完成ノ蒸氣驅動乙女 | 低 |
-| 灼熱Beach Side Bunny(かめりあ's \ Remix) | 低 |
 | 疾風迅雷 | 低 |
 
 ### SPL
 
 | 曲名 | 個人差 |
 |------|--------|
-| ALL MY TURN-このターンに、オレの全てを賭ける- * | — |
 | Arabian Rave Night | 低 |
 | Burning Flame | 低 |
 | CHRONO DIVER -NORNIR- | 低 |
-| INAZUMA * | — |
+| CoMAAAAAAA * | — |
+| Like+it! * | — |
+| MENTAL MELTDOWN * | — |
 | Marie Antoinette | 低 |
 | STARLIGHT DANCEHALL | 低 |
-| Submerge Serenade * | — |
+| Super Duper Racers * | — |
+| Übertreffen * | — |
+| ミュージック・アワー * | — |
+| ユミル * | — |
 | 神っぽいな * | — |
 
-## 12.0  （62 曲）
+## 12.0  （64 曲）
 
 ### SPA
 
@@ -465,29 +451,34 @@ BPI・CPI データをもとにモデルで算出した非公式難易度です�
 |------|--------|
 | 2 Be Continued * | — |
 | ANCHOR | 低 |
+| Ancient Scapes | 低 |
 | Arkadia | 低 |
 | BEAT PRISONER | 低 |
 | BIGWAVERS | 低 |
 | BLAZING_LAZER | 低 |
 | Begin * | — |
+| Close the World feat.a☆ru | 低 |
 | Dahlia | 低 |
 | Despair of ELFERIA | 低 |
-| Disco Killer Music Lover * | — |
 | EVANESCENT | 低 |
 | EXUSIA | 低 |
 | EYE OF THE HEAVEN | 低 |
 | Evans | 低 |
+| Feel The Beat | 低 |
 | Flying Castle | 低 |
+| From Human Blood * | — |
 | HyperTwist * | — |
 | Konzert V | 低 |
+| L.E.D. & HuΣeR\, * | — |
 | Last Dance | 低 |
 | Liberation | 低 |
 | Life Is A Game ft.DD\Metal | 低 |
+| Ludus In Tenebris * | — |
 | NEO GENERATOR SEVEN | 低 |
+| PERFECT GREAT!! * | — |
 | Pārvatī | 低 |
 | Rave*it!! Rave*it!! | 低 |
 | Say YEEEAHH | 低 |
-| Scripted Connection⇒ A mix * | — |
 | Smalt #28598F | 低 |
 | Super Freak | 低 |
 | TOXIC VIBRATION | 低 |
@@ -495,17 +486,18 @@ BPI・CPI データをもとにモデルで算出した非公式難易度です�
 | The Limbo | 低 |
 | V * | — |
 | Vermilion Carol | 低 |
-| We're so Happy(P*Light Remix) IIDX ver. | 低 |
 | X | 低 |
+| anthracene * | — |
 | cinder | 低 |
+| invoker | 低 |
 | rommmo | 低 |
-| uәn * | — |
-| Übertreffen† * | — |
+| tripping contact * | — |
 | Ōu Legends | 低 |
+| ιgniЯRuina * | — |
+| スーパー戦湯ババンバーン * | — |
 | トリカゴノ鳳凰 | 低 |
 | ビビッド ☆＋＊。キラキライム * | — |
 | 即席！脳直★ミュージックシステム | 低 |
-| 夏色DIARY - L.E.D.-G STYLE MIX - | 低 |
 | 抱きしめてモナムール | 低 |
 | 津軽雪 | 低 |
 | 深淵に捧ぐレクイエム | 低 |
@@ -515,23 +507,19 @@ BPI・CPI データをもとにモデルで算出した非公式難易度です�
 
 | 曲名 | 個人差 |
 |------|--------|
+| ALL MY TURN-このターンに、オレの全てを賭ける- * | — |
 | Amazing Mirage | 低 |
 | Blue Rain | 低 |
 | GUILTY | 低 |
-| Like+it! * | — |
-| MENTAL MELTDOWN * | — |
+| INHERITANCE * | — |
 | QUANTUM TELEPORTATION | 低 |
-| Scripted Connection⇒ H mix * | — |
-| Super Duper Racers * | — |
 | THE DEEP STRIKER | 低 |
 | yellow head joe | 低 |
-| Übertreffen * | — |
+| ÆTHER * | — |
 | ハイテックトキオ | 低 |
-| ミュージック・アワー * | — |
 | ミラージュ･レジデンス | 低 |
-| ユミル * | — |
 
-## 11.9  （61 曲）
+## 11.9  （49 曲）
 
 ### SPA
 
@@ -543,48 +531,39 @@ BPI・CPI データをもとにモデルで算出した非公式難易度です�
 | B.O.D.Y. | 低 |
 | CODE:1 | 低 |
 | Catch Our Fire! | 低 |
-| Colors(radio edit) | 低 |
 | DOMINION | 低 |
+| DUAL STRIKER * | — |
 | EBONY & IVORY | 低 |
 | Feel The Beat | 低 |
 | Fegrix | 低 |
 | FlyAway | 低 |
-| From Human Blood * | — |
 | GRAVITON | 低 |
 | Gravigazer | 低 |
+| Hollywood Galaxy * | — |
 | KILL EACH OTHER | 低 |
 | King of Tribe * | — |
-| L.E.D. & HuΣeR\, * | — |
 | L.F.O | 低 |
+| LASER CRUSTER | 低 |
 | Lethal Weapon | 低 |
 | Lightspeed | 低 |
-| Ludus In Tenebris * | — |
 | MARLIN | 低 |
 | Meissa | 低 |
-| Mid-Corner (Magic Maker) | 低 |
 | ONE AND ONLY | 低 |
-| PLASMA SOUL NIGHT feat. Nana Takahashi / 709sec. | 低 |
 | POSSESSION | 低 |
 | Persephone | 低 |
-| Please Welcome Mr.C * | — |
-| RINИE * | — |
 | SAY BAY | 低 |
-| SOLID STATE SQUAD -RISEN RELIC REMIX- | 低 |
 | Seven Times Four | 低 |
 | Sky High | 低 |
-| T-REX vs Velociraptor (In the Far east euphoria) | 低 |
 | TECHNO Style Essentials | 低 |
 | VANESSA | 低 |
 | Vinculum stellarum | 低 |
-| anthracene * | — |
 | neu | 低 |
 | u gotta beat | 低 |
+| uәn * | — |
 | クレッシェンド * | — |
 | 儚キ戀ノ幻想譚 | 低 |
-| 八戸亀生羅\, * | — |
 | 海神 | 低 |
 | 狂イ咲ケ焔ノ華 | 低 |
-| 神謳 -RESONANCE- | 低 |
 | 禊 | 低 |
 | 童話回廊 | 低 |
 | 紫陽花 -AZISAI- | 低 |
@@ -597,12 +576,9 @@ BPI・CPI データをもとにモデルで算出した非公式難易度です�
 |------|--------|
 | CaptivAte2～覚醒～ * | — |
 | Cosmic Cat | 低 |
-| INHERITANCE * | — |
 | Kung-fu Empire | 低 |
-| garden * | — |
-| ÆTHER * | — |
+| デモーニッシュ * | — |
 | 龍と少女とデコヒーレンス | 低 |
-| 龍王の霊廟(Mausoleum Of The Primal Dragon) | 低 |
 
 ## 11.8  （43 曲）
 
@@ -626,11 +602,12 @@ BPI・CPI データをもとにモデルで算出した非公式難易度です�
 | FUZIN RIZIN | 低 |
 | Hollywood Galaxy(DJ NAGAI Remix) * | — |
 | LASER CRUSTER | 低 |
-| Lisa-RICCIA * | — |
 | Little Star | 低 |
 | Matt Silver | 低 |
 | No Border | 低 |
 | RALLY '25 * | — |
+| RINИE * | — |
+| SOLID STATE SQUAD | 低 |
 | SYNC-ANTHEM | 低 |
 | Shooting Fireball | 低 |
 | Sounds Of Summer | 低 |
@@ -647,7 +624,7 @@ BPI・CPI データをもとにモデルで算出した非公式難易度です�
 | リリーゼと炎龍レーヴァテイン | 低 |
 | 不沈艦CANDY | 低 |
 | 九尾狐夜行 | 低 |
-| 旋律のドグマ～Misérables～ | 低 |
+| 八戸亀生羅\, * | — |
 
 ### SPL
 
@@ -656,8 +633,7 @@ BPI・CPI データをもとにモデルで算出した非公式難易度です�
 | M.D.Injection * | — |
 | spiral galaxy | 低 |
 | waxing and wanding | 低 |
-| デモーニッシュ * | — |
-| 新宝島 * | — |
+| ちょえちょえまぎか * | — |
 
 ## 11.7  （49 曲）
 
@@ -672,7 +648,6 @@ BPI・CPI データをもとにモデルで算出した非公式難易度です�
 | Adularia | 低 |
 | Bring The Fire | 低 |
 | Double Dribble | 低 |
-| ELECTRIC MASSIVE DIVER * | — |
 | EX-MASSIVE FIGHTER | 低 |
 | GAIA | 低 |
 | GENE | 低 |
@@ -683,6 +658,7 @@ BPI・CPI データをもとにモデルで算出した非公式難易度です�
 | Here We Go Now | 低 |
 | Idola | 低 |
 | LIVE DRIVING!! feat. 花たん | 低 |
+| Lisa-RICCIA * | — |
 | M4K3 1T B0UNC3 | 低 |
 | Megalara Garuda | 低 |
 | NNRT | 低 |
@@ -712,15 +688,15 @@ BPI・CPI データをもとにモデルで算出した非公式難易度です�
 
 | 曲名 | 個人差 |
 |------|--------|
+| CaptivAte～浄化～ * | — |
 | GRID KNIGHT * | — |
 | Little Little Princess | 低 |
+| Plazma * | — |
 | Ypsilon | 低 |
-| thunder HOUSE NATION Remix * | — |
-| ちょえちょえまぎか * | — |
 | 仮想空間の旅人たち | 低 |
-| 華爛漫-Flowers- * | — |
+| 新宝島 * | — |
 
-## 11.6  （24 曲）
+## 11.6  （21 曲）
 
 ### SPA
 
@@ -731,12 +707,11 @@ BPI・CPI データをもとにモデルで算出した非公式難易度です�
 | Candy Galy | 低 |
 | Carry Me Away | 低 |
 | Dr. Chemical & Killing Machine | 低 |
+| ELECTRIC MASSIVE DIVER * | — |
 | F | 低 |
-| NINJA IS DEAD IIDX ver. | 低 |
 | Nightmare before oversleep | 低 |
 | Sirius | 低 |
 | Stereo Beasts | 低 |
-| Summerlights(IIDX Edition) | 低 |
 | TROOPERS | 低 |
 | The Onlyonez | 低 |
 | Venom | 低 |
@@ -744,19 +719,17 @@ BPI・CPI データをもとにモデルで算出した非公式難易度です�
 | entelecheia | 低 |
 | invoker | 低 |
 | oratio | 低 |
-| カゴノトリ～弐式～ * | — |
 | 刃図羅 | 低 |
 
 ### SPL
 
 | 曲名 | 個人差 |
 |------|--------|
-| CaptivAte～浄化～ * | — |
 | Nothing but Theory * | — |
-| Plazma * | — |
 | RED ZONE | 低 |
+| セピアの軌跡 ft. 天宮みや(少女フラクタル) * | — |
 
-## 11.5  （38 曲）
+## 11.5  （36 曲）
 
 ### SPA
 
@@ -767,7 +740,6 @@ BPI・CPI データをもとにモデルで算出した非公式難易度です�
 | BIGソムタム | 低 |
 | Broken | 低 |
 | Drastic Dramatic | 低 |
-| JUSTICE/GUILTY feat. Nana Takahashi & 709sec. | 低 |
 | LIGHTNING STRIKES | 低 |
 | Primitive Vibes | 低 |
 | Rampage | 低 |
@@ -795,14 +767,13 @@ BPI・CPI データをもとにモデルで算出した非公式難易度です�
 
 | 曲名 | 個人差 |
 |------|--------|
-| A MINSTREL ～ ver.short-scape ～ | 低 |
 | Beat Radiance | 低 |
 | CUE CUE RESCUE | 低 |
 | KING | 低 |
 | Sweet Clapper * | — |
+| garden * | — |
 | snow storm | 低 |
 | グッバイ宣言 * | — |
-| セピアの軌跡 ft. 天宮みや(少女フラクタル) * | — |
 | フォニイ * | — |
 | 華蝶風雪 | 低 |
 

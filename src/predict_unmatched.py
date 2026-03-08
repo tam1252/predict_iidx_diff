@@ -18,8 +18,8 @@ import time
 
 import numpy as np
 import pandas as pd
-from sklearn.ensemble import GradientBoostingRegressor
-from sklearn.model_selection import cross_val_score, KFold
+
+from model_utils import select_best_model
 
 sys.path.insert(0, 'src')
 sys.path.insert(0, 'src/textage')
@@ -33,10 +33,6 @@ FEATURES = [
     'peak_density', 'mean_density', 'peak_scratch_density',
     'bpm_min', 'bpm_max', 'bpm_ratio',
 ]
-
-GBM_PARAMS = dict(n_estimators=300, max_depth=4, learning_rate=0.05,
-                  subsample=0.8, random_state=42)
-
 
 def map_levels(scores, ref_scores, lo=11.5, hi=13.0, p_lo=5, p_hi=95, step=0.1):
     """Map scores to levels using reference distribution for anchoring."""
@@ -65,7 +61,7 @@ def load_unmatched():
 
 
 def train_feature_only_models(df):
-    """Train GBM models on chart features only, for each difficulty signal."""
+    """Train best models (selected via CV) on chart features only."""
     targets = {
         'bpi_at_aaa':  'BPI@AAA',
         'bpi_at_9444': 'BPI@94.44%',
@@ -73,18 +69,14 @@ def train_feature_only_models(df):
         'cpi_exhard':  'CPI EXHARD',
     }
     models = {}
-    params_out = {}  # z-score params per target
-    kf = KFold(n_splits=5, shuffle=True, random_state=42)
+    params_out = {}
 
     for col, label in targets.items():
         sub = df[FEATURES + [col]].dropna()
         X = sub[FEATURES].values
         y = sub[col].values
-        scores = cross_val_score(GradientBoostingRegressor(**GBM_PARAMS), X, y,
-                                 cv=kf, scoring='r2')
-        print(f'  {label}: R²={scores.mean():.3f}±{scores.std():.3f} (n={len(sub)})')
-        m = GradientBoostingRegressor(**GBM_PARAMS).fit(X, y)
-        models[col] = m
+        print(f'  {label} (n={len(sub)}):')
+        models[col] = select_best_model(X, y, label)
         params_out[col] = (y.mean(), y.std())
 
     return models, params_out
@@ -97,6 +89,7 @@ def main():
     for col in FEATURES + ['bpi_at_aaa', 'bpi_at_9444', 'cpi_hard', 'cpi_exhard']:
         if col in train_df.columns:
             train_df[col] = pd.to_numeric(train_df[col], errors='coerce')
+    train_df['sara'] = train_df['sara'].clip(upper=100.0)
 
     # ── Train models ──────────────────────────────────────────────────────────
     print('\nTraining chart-feature-only models (no CPI/BPI cross-source features):')
@@ -153,6 +146,7 @@ def main():
     pred_df = pd.DataFrame(rows)
     for col in FEATURES:
         pred_df[col] = pd.to_numeric(pred_df[col], errors='coerce')
+    pred_df['sara'] = pred_df['sara'].clip(upper=100.0)
 
     valid = pred_df.dropna(subset=FEATURES)
     X_pred = valid[FEATURES].values

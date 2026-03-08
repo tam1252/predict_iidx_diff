@@ -16,9 +16,9 @@ import sys
 
 import numpy as np
 import pandas as pd
-from sklearn.ensemble import GradientBoostingRegressor
 
 sys.path.insert(0, 'src')
+from model_utils import select_best_model
 from collect_data import normalize_title, _aggressive_norm
 
 FEATURES = [
@@ -29,8 +29,6 @@ FEATURES = [
 ]
 FEAT_BPI = FEATURES + ['cpi_kojinsa']
 
-GBM_PARAMS = dict(n_estimators=300, max_depth=4, learning_rate=0.05,
-                  subsample=0.8, random_state=42)
 
 
 def zscore_params(v):
@@ -159,6 +157,7 @@ def main():
     for col in num_cols:
         if col in train.columns:
             train[col] = pd.to_numeric(train[col], errors='coerce')
+    train['sara'] = train['sara'].clip(upper=100.0)
     train['cpi_kojinsa'] = train['cpi_exhard'] - train['cpi_hard']
 
     full_mask = train['bpi_at_aaa'].notna() & train['cpi_hard'].notna()
@@ -167,18 +166,15 @@ def main():
 
     # ── Train BPI prediction models ───────────────────────────────────────────
     print('Training BPI models on ☆12 data ...')
-    model_aaa  = GradientBoostingRegressor(**GBM_PARAMS).fit(
-        full[FEAT_BPI].values, full['bpi_at_aaa'].values)
-    model_9444 = GradientBoostingRegressor(**GBM_PARAMS).fit(
-        full[FEAT_BPI].values, full['bpi_at_9444'].values)
+    model_aaa  = select_best_model(full[FEAT_BPI].values, full['bpi_at_aaa'].values,  'bpi_at_aaa')
+    model_9444 = select_best_model(full[FEAT_BPI].values, full['bpi_at_9444'].values, 'bpi_at_9444')
 
     # ── Train chart-features-only models for CPI prediction ──────────────────
     print('Training chart-features-only models ...')
     feat_only_models = {}
     for col in ['bpi_at_aaa', 'bpi_at_9444', 'cpi_hard', 'cpi_exhard']:
         sub = train[FEATURES + [col]].dropna()
-        m = GradientBoostingRegressor(**GBM_PARAMS).fit(sub[FEATURES].values, sub[col].values)
-        feat_only_models[col] = m
+        feat_only_models[col] = select_best_model(sub[FEATURES].values, sub[col].values, col)
 
     # ── Z-score parameters from full ☆12 ensemble ────────────────────────────
     bpi_aaa_all  = full['bpi_at_aaa'].values
@@ -202,6 +198,7 @@ def main():
     for col in FEATURES + ['cpi_hard', 'cpi_exhard']:
         if col in df11.columns:
             df11[col] = pd.to_numeric(df11[col], errors='coerce')
+    df11['sara'] = df11['sara'].clip(upper=100.0)
     df11 = _drop_sp12_spl_duplicates(df11)
     df11 = _clear_invalid_cpi(df11)
     df11['cpi_kojinsa'] = df11['cpi_exhard'] - df11['cpi_hard']

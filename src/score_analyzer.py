@@ -146,7 +146,7 @@ def analyze_density(
             'mean_density': 0.0,
         }
 
-    all_times   = [n['time'] for n in timed_notes]
+    all_times     = [n['time'] for n in timed_notes if n['key'] != 0]  # key 1-7 only
     scratch_times = [n['time'] for n in timed_notes if n['key'] == 0]
 
     # Use end of last measure as duration (not just last note time)

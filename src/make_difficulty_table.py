@@ -18,7 +18,8 @@ import re
 
 import numpy as np
 import pandas as pd
-from sklearn.ensemble import GradientBoostingRegressor
+
+from model_utils import select_best_model
 
 FEATURES = [
     'rand', 'doji', 'kdan', 'tril', 'tate', 'sara', 'cnbs',
@@ -93,6 +94,7 @@ def main():
     for col in num_cols:
         if col in df.columns:
             df[col] = pd.to_numeric(df[col], errors='coerce')
+    df['sara'] = df['sara'].clip(upper=100.0)
 
     # Fix LEGGENDARIA chart classification before any analysis
     df = _fix_leggendaria_entries(df)
@@ -112,10 +114,8 @@ def main():
     X_full = full[FEAT_BPI].values
 
     print(f'Training BPI models on {len(full)} songs ...')
-    gbm_params = dict(n_estimators=300, max_depth=4, learning_rate=0.05,
-                      subsample=0.8, random_state=42)
-    model_aaa  = GradientBoostingRegressor(**gbm_params).fit(X_full, full['bpi_at_aaa'].values)
-    model_9444 = GradientBoostingRegressor(**gbm_params).fit(X_full, full['bpi_at_9444'].values)
+    model_aaa  = select_best_model(X_full, full['bpi_at_aaa'].values,  'bpi_at_aaa')
+    model_9444 = select_best_model(X_full, full['bpi_at_9444'].values, 'bpi_at_9444')
 
     # ── Predict BPI for CPI-only songs ────────────────────────────────────────
     cpi_only = df[cpi_only_mask].dropna(subset=FEAT_BPI)
