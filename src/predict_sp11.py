@@ -36,10 +36,15 @@ def zscore(v, mu, sigma):
     return (v - mu) / sigma
 
 
-def map_levels(scores, lo=11.0, hi=13.0, p_lo=5, p_hi=95, step=0.1):
-    s_lo = np.percentile(scores, p_lo)
-    s_hi = np.percentile(scores, p_hi)
-    lvl = lo + (scores - s_lo) / (s_hi - s_lo) * (hi - lo)
+def map_levels_sp12_ref(scores, sp12_scores, lo=11.0, hi=13.0, p_lo=5, p_hi=95, step=0.1):
+    """Map scores to levels using ☆12 distribution as reference.
+
+    The ☆12 p5→11.5 / p95→13.0 anchors define the scale.
+    ☆11 songs with scores below the ☆12 p5 naturally fall to 11.0–11.4.
+    """
+    s_lo = np.percentile(sp12_scores, p_lo)   # ☆12 p5  → level 11.5
+    s_hi = np.percentile(sp12_scores, p_hi)   # ☆12 p95 → level 13.0
+    lvl = 11.5 + (scores - s_lo) / (s_hi - s_lo) * 1.5
     return np.round(np.clip(np.round(lvl / step) * step, lo, hi), 1)
 
 
@@ -168,7 +173,10 @@ def main():
     # ── Combine and compute levels ────────────────────────────────────────────
     all_df = pd.concat([cpi_df, no_cpi_df], ignore_index=True)
 
-    all_df['level'] = map_levels(all_df['difficulty_score'].values, lo=11.0, hi=13.0)
+    # Use ☆12 OOF difficulty_scores as the reference distribution
+    sp12_ref = pd.read_csv('data/difficulty_scores.csv')['difficulty_score'].values
+    all_df['level'] = map_levels_sp12_ref(
+        all_df['difficulty_score'].values, sp12_ref, lo=11.0, hi=13.0)
     all_df['chart_type'] = all_df['difficulty'].map({'A': 'SPA', 'X': 'SPL'})
 
     # Kojinsa for CPI songs

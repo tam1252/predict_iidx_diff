@@ -67,6 +67,55 @@ def _build_md(df, title_str, level_range_str, note_str=''):
     return buf.getvalue()
 
 
+def _load_combined():
+    sp12 = _load_sp12()
+    sp12['orig_level'] = 12
+
+    sp11 = _load_sp11()
+    sp11['orig_level'] = 11
+
+    merged = pd.concat([sp12, sp11], ignore_index=True)
+    return merged.sort_values(['level', 'orig_level', 'title'], ascending=[False, False, True])
+
+
+def _build_combined_md(df):
+    buf = io.StringIO()
+    buf.write('# SP 非公式難易度表（☆11・☆12 統合）\n\n')
+    buf.write('BPI・CPI データをもとにモデルで算出した非公式難易度です。\n\n')
+    buf.write('- **☆12** レベル範囲: 11.5 〜 13.0\n')
+    buf.write('- **☆11** レベル範囲: 11.0 〜 13.0（☆12 モデルの推定値。精度は☆12より低め）\n')
+    buf.write('- 個人差: **高** / **中** / **低** / **—**（データなし）\n')
+    buf.write('- `*` マークはモデル予測のみ（BPI/CPI 実データなし）\n\n')
+    buf.write('---\n\n')
+
+    for lvl in sorted(df['level'].unique(), reverse=True):
+        sub = df[df['level'] == lvl]
+
+        # Split by orig_level then chart_type
+        sections = [
+            ('☆12 SPA', sub[(sub['orig_level'] == 12) & (sub['chart_type'] == 'SPA')]),
+            ('☆12 SPL', sub[(sub['orig_level'] == 12) & (sub['chart_type'] == 'SPL')]),
+            ('☆11 SPA', sub[(sub['orig_level'] == 11) & (sub['chart_type'] == 'SPA')]),
+            ('☆11 SPL', sub[(sub['orig_level'] == 11) & (sub['chart_type'] == 'SPL')]),
+        ]
+
+        buf.write(f'## {lvl:.1f}  （{len(sub)} 曲）\n\n')
+
+        for label, rows in sections:
+            if rows.empty:
+                continue
+            rows = rows.sort_values('title')
+            buf.write(f'### {label}\n\n')
+            buf.write('| 曲名 | 個人差 |\n')
+            buf.write('|------|--------|\n')
+            for _, row in rows.iterrows():
+                mark = ' *' if row['estimated'] else ''
+                buf.write(f'| {row["title"]}{mark} | {row["kojinsa_disp"]} |\n')
+            buf.write('\n')
+
+    return buf.getvalue()
+
+
 def main():
     os.makedirs('docs', exist_ok=True)
 
@@ -88,6 +137,14 @@ def main():
     with open('docs/difficulty_table_sp11.md', 'w', encoding='utf-8') as f:
         f.write(md11)
     print(f'Written: docs/difficulty_table_sp11.md  ({total11} songs, {est11} estimated *)')
+
+    # ── 統合 ──────────────────────────────────────────────────────────────────
+    combined = _load_combined()
+    total_c = len(combined)
+    md_c = _build_combined_md(combined)
+    with open('docs/difficulty_table.md', 'w', encoding='utf-8') as f:
+        f.write(md_c)
+    print(f'Written: docs/difficulty_table.md  ({total_c} songs combined)')
 
 
 if __name__ == '__main__':
