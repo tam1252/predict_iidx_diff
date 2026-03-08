@@ -156,17 +156,15 @@ bms2jsh.js の `stat_check_*` + `stat_result()` を再現。
 
 ## 非公式難易度表
 
-→ **[docs/difficulty_table.md](docs/difficulty_table.md)**
+BPI・CPI データおよびモデル予測で算出した非公式難易度です。
 
-☆12 SP 全611曲を対象に BPI・CPI データおよびモデル予測で算出した非公式難易度です。
+| レベル | リンク | 曲数 | レベル範囲 |
+| --- | --- | --- | --- |
+| ☆12 SP | [docs/difficulty_table_sp12.md](docs/difficulty_table_sp12.md) | 611曲 | 11.5 〜 13.0 |
+| ☆11 SP | [docs/difficulty_table_sp11.md](docs/difficulty_table_sp11.md) | 668曲 | 11.0 〜 13.0 |
 
-| 項目 | 内容 |
-| --- | --- |
-| 対象 | ☆12 SP 全611曲（SPA / SPL） |
-| レベル範囲 | 11.5 〜 13.0（0.1刻み） |
-| 個人差 | 高 / 中 / 低 の3段階 |
-| データあり | 509曲（BPI + CPI 実データ） |
-| 予測のみ `*` | 102曲（譜面特徴量からモデル予測） |
+- 個人差: **高** / **中** / **低** の3段階
+- `*` マークはモデル予測のみ（BPI/CPI 実データなし）
 
 ---
 

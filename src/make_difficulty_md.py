@@ -1,19 +1,17 @@
 """
-make_difficulty_md.py — Generate unofficial ☆12 SP difficulty table as Markdown.
+make_difficulty_md.py — Generate unofficial SP difficulty tables as Markdown.
 
-Combines data/difficulty_table.csv (531 songs with CPI/BPI data)
-and data/difficulty_table_unmatched.csv (80 songs, chart-features-only prediction).
-
-Output: docs/difficulty_table.md
+Outputs:
+  docs/difficulty_table_sp12.md  — ☆12 SP (11.5–13.0)
+  docs/difficulty_table_sp11.md  — ☆11 SP (11.0–13.0)
 """
 
 import io
+import os
 import pandas as pd
 
-KOJINSA_LABEL = {'高': '高', '中': '中', '低': '低', '—': '—'}
 
-
-def load_tables():
+def _load_sp12():
     df = pd.read_csv('data/difficulty_table.csv', keep_default_na=False, na_values=[''])
     df['estimated'] = df['source'].str.startswith('cpi_only')
     df['kojinsa_disp'] = df['kojinsa']
@@ -24,46 +22,44 @@ def load_tables():
 
     merged = pd.concat([
         df[['title', 'chart_type', 'level', 'kojinsa_disp', 'estimated']],
-        uf[['title', 'chart_type', 'level', 'kojinsa_disp', 'estimated']].rename(
-            columns={'kojinsa_disp': 'kojinsa_disp'}),
+        uf[['title', 'chart_type', 'level', 'kojinsa_disp', 'estimated']],
     ], ignore_index=True)
-
-    merged = merged.sort_values(['level', 'title'], ascending=[False, True])
-    return merged
+    return merged.sort_values(['level', 'title'], ascending=[False, True])
 
 
-def build_md(df):
+def _load_sp11():
+    df = pd.read_csv('data/difficulty_table_sp11.csv', keep_default_na=False, na_values=[''])
+    df['estimated'] = df['source'] == 'chart_features_only'
+    df['kojinsa_disp'] = df['kojinsa']
+    return df[['title', 'chart_type', 'level', 'kojinsa_disp', 'estimated']]\
+        .sort_values(['level', 'title'], ascending=[False, True])
+
+
+def _build_md(df, title_str, level_range_str, note_str=''):
     buf = io.StringIO()
-
-    buf.write('# ☆12 SP 非公式難易度表\n\n')
+    buf.write(f'# {title_str}\n\n')
     buf.write('BPI・CPI データをもとにモデルで算出した非公式難易度です。\n\n')
-    buf.write('- レベル範囲: **11.5 〜 13.0**（0.1 刻み）\n')
+    buf.write(f'- レベル範囲: **{level_range_str}**（0.1 刻み）\n')
     buf.write('- 個人差: **高** / **中** / **低** / **—**（データなし）\n')
-    buf.write('- `*` マークはモデル予測のみ（BPI/CPI 実データなし）\n\n')
-    buf.write('---\n\n')
+    buf.write('- `*` マークはモデル予測のみ（BPI/CPI 実データなし）\n')
+    if note_str:
+        buf.write(f'- {note_str}\n')
+    buf.write('\n---\n\n')
 
-    levels = sorted(df['level'].unique(), reverse=True)
-    for lvl in levels:
-        sub = df[df['level'] == lvl].copy()
+    for lvl in sorted(df['level'].unique(), reverse=True):
+        sub = df[df['level'] == lvl]
         spa = sub[sub['chart_type'] == 'SPA'].sort_values('title')
         spl = sub[sub['chart_type'] == 'SPL'].sort_values('title')
 
         buf.write(f'## {lvl:.1f}  （{len(sub)} 曲）\n\n')
 
-        if not spa.empty:
-            buf.write('### SPA\n\n')
+        for label, rows in [('SPA', spa), ('SPL', spl)]:
+            if rows.empty:
+                continue
+            buf.write(f'### {label}\n\n')
             buf.write('| 曲名 | 個人差 |\n')
             buf.write('|------|--------|\n')
-            for _, row in spa.iterrows():
-                mark = ' *' if row['estimated'] else ''
-                buf.write(f'| {row["title"]}{mark} | {row["kojinsa_disp"]} |\n')
-            buf.write('\n')
-
-        if not spl.empty:
-            buf.write('### SPL\n\n')
-            buf.write('| 曲名 | 個人差 |\n')
-            buf.write('|------|--------|\n')
-            for _, row in spl.iterrows():
+            for _, row in rows.iterrows():
                 mark = ' *' if row['estimated'] else ''
                 buf.write(f'| {row["title"]}{mark} | {row["kojinsa_disp"]} |\n')
             buf.write('\n')
@@ -72,19 +68,26 @@ def build_md(df):
 
 
 def main():
-    import os
     os.makedirs('docs', exist_ok=True)
 
-    df = load_tables()
-    md = build_md(df)
+    # ── ☆12 ──────────────────────────────────────────────────────────────────
+    sp12 = _load_sp12()
+    total12 = len(sp12)
+    est12 = int(sp12['estimated'].sum())
+    md12 = _build_md(sp12, '☆12 SP 非公式難易度表', '11.5 〜 13.0')
+    with open('docs/difficulty_table_sp12.md', 'w', encoding='utf-8') as f:
+        f.write(md12)
+    print(f'Written: docs/difficulty_table_sp12.md  ({total12} songs, {est12} estimated *)')
 
-    with open('docs/difficulty_table.md', 'w', encoding='utf-8') as f:
-        f.write(md)
-
-    total = len(df)
-    estimated = df['estimated'].sum()
-    print(f'Written: docs/difficulty_table.md')
-    print(f'Total: {total} songs ({total - estimated} with data, {estimated} estimated *)')
+    # ── ☆11 ──────────────────────────────────────────────────────────────────
+    sp11 = _load_sp11()
+    total11 = len(sp11)
+    est11 = int(sp11['estimated'].sum())
+    md11 = _build_md(sp11, '☆11 SP 非公式難易度表', '11.0 〜 13.0',
+                     note_str='☆12 モデルを ☆11 譜面特徴量に適用した推定値のため精度は低め')
+    with open('docs/difficulty_table_sp11.md', 'w', encoding='utf-8') as f:
+        f.write(md11)
+    print(f'Written: docs/difficulty_table_sp11.md  ({total11} songs, {est11} estimated *)')
 
 
 if __name__ == '__main__':
